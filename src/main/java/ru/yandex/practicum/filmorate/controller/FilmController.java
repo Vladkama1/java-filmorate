@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/films")
@@ -35,12 +36,12 @@ public class FilmController {
         }
         film.setId(createId());
         films.put(film.getId(), film);
-        log.info("Добавлен фильм {}",film.getName());
+        log.info("Добавлен фильм {}", film.getName());
         return film;
     }
 
     @PutMapping
-    public Film put( @Valid @RequestBody Film film) {
+    public Film put(@Valid @RequestBody Film film) {
         log.info("Получен запрос Put.");
         if (!films.containsKey(film.getId())) {
             throw new NotFoundException("Film this is not ID", HttpStatus.NOT_FOUND);
@@ -49,7 +50,7 @@ public class FilmController {
             throw new ValidException("Data reliz before 28.12.1895 year", HttpStatus.BAD_REQUEST);
         }
         films.put(film.getId(), film);
-        log.info("Обновлёна дата релиза {}",film.getReleaseDate());
+        log.info("Обновлёна дата релиза {}", film.getReleaseDate());
         return film;
     }
 

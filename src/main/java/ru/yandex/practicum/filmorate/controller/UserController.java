@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 @Slf4j
 @RestController
 @RequestMapping("/users")
@@ -27,12 +28,12 @@ public class UserController {
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         log.info("Получен запрос Post.");
-        if (user.getName()==null || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         user.setId(createId());
         users.put(user.getId(), user);
-        log.info("Добавлен пользователь {}",user.getName());
+        log.info("Добавлен пользователь {}", user.getName());
         return user;
     }
 
@@ -42,11 +43,11 @@ public class UserController {
         if (!users.containsKey(user.getId())) {
             throw new NotFoundException("Film this is not ID", HttpStatus.NOT_FOUND);
         }
-        if (user.getName()==null || user.getName().isEmpty()) {
+        if (user.getName() == null || user.getName().isEmpty()) {
             user.setName(user.getLogin());
         }
         users.put(user.getId(), user);
-        log.info("Обновлён пользователь {}",user.getLogin());
+        log.info("Обновлён пользователь {}", user.getLogin());
         return user;
     }
 

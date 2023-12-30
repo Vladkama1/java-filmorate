@@ -21,7 +21,6 @@ class UserControllerTest {
     @BeforeEach
     void beforeEach() {
         userController = new UserController();
-
     }
 
     @Test
