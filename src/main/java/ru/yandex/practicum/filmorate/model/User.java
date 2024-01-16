@@ -8,18 +8,24 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Past;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDate;
+import java.util.HashSet;
+import java.util.Set;
+
+import static ru.yandex.practicum.filmorate.constants.UserConstant.EMAIL_REGEX;
+import static ru.yandex.practicum.filmorate.constants.UserConstant.LOGIN_REGEX;
 
 @Data
 @Builder
 public class User {
-    private int id;
+    private Long id;
     @NotBlank(message = "Email not null.")
-    @Email(regexp = "[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\\.[a-zA-Z]{2,5}", message = "Incorrect Email.")
+    @Email(regexp = EMAIL_REGEX, message = "Incorrect Email.")
     private String email;
     @NotBlank(message = "Login not null.")
-    @Pattern(regexp = "\\S*", message = "Login can`t spase.")
+    @Pattern(regexp = LOGIN_REGEX, message = "Login can`t spase.")
     private String login;
     private String name;
     @Past(message = "Birthday don`t future.")
     private LocalDate birthday;
+    private final Set<Long> friends = new HashSet<>();
 }

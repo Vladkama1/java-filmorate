@@ -1,60 +1,77 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.service.FilmService;
 
 import javax.validation.Valid;
-import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
+import javax.validation.constraints.Positive;
 import java.util.List;
-import java.util.Map;
+
+import static ru.yandex.practicum.filmorate.constants.FilmConstant.FILM_RELEASE;
+import static ru.yandex.practicum.filmorate.constants.FilmConstant.POPULAR_FILMS;
 
 @Slf4j
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/films")
 public class FilmController {
-    private int id = 1;
-    private LocalDate calendar = LocalDate.of(1895, 12, 28);
-    private final Map<Integer, Film> films = new HashMap<>();
+    private final FilmService service;
+
+    @GetMapping("/{id}")
+    public Film getFilmById(@PathVariable Long id) {
+        return service.findById(id);
+    }
 
     @GetMapping
-    public List<Film> findAll() {
+    public List<Film> getAllFilms() {
         log.info("Получен запрос Get.");
-        return new ArrayList<>(films.values());
+        return service.getAllFilm();
+    }
+
+    @GetMapping("/popular")
+    public List<Film> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) String count) {
+        return service.getPopularFilms(count);
     }
 
     @PostMapping
-    public Film create(@Valid @RequestBody Film film) {
+    public Film createFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос Post.");
-        if (film.getReleaseDate().isBefore(calendar)) {
-            throw new ValidException("Data reliz before 28.12.1895 year", HttpStatus.NOT_FOUND);
-        }
-        film.setId(createId());
-        films.put(film.getId(), film);
-        log.info("Добавлен фильм {}", film.getName());
-        return film;
+        validatedReleaseFilm(film);
+        log.info("Добавлен фильм: {}", film.getName());
+        return service.saveFilm(film);
     }
 
     @PutMapping
-    public Film put(@Valid @RequestBody Film film) {
+    public Film updateFilm(@Valid @RequestBody Film film) {
         log.info("Получен запрос Put.");
-        if (!films.containsKey(film.getId())) {
-            throw new NotFoundException("Film this is not ID", HttpStatus.NOT_FOUND);
-        }
-        if (film.getReleaseDate().isBefore(calendar)) {
-            throw new ValidException("Data reliz before 28.12.1895 year", HttpStatus.BAD_REQUEST);
-        }
-        films.put(film.getId(), film);
-        log.info("Обновлёна дата релиза {}", film.getReleaseDate());
-        return film;
+        validatedReleaseFilm(film);
+        log.info("Обновлёна дата релиза: {}", film.getReleaseDate());
+        return service.updateFilm(film);
     }
 
-    private int createId() {
-        return id++;
+    @PutMapping("/{id}/like/{userId}")
+    public void addLike(@PathVariable Long id, @PathVariable Long userId) {
+        service.addLike(id, userId);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        service.delete(id);
+    }
+
+    @DeleteMapping("/{id}/like/{userId}")
+    public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
+        service.deleteLike(id, userId);
+    }
+
+    private void validatedReleaseFilm(Film film) {
+        if (film.getReleaseDate().isBefore(FILM_RELEASE)) {
+            throw new ValidException("Data release before 28.12.1895 year", HttpStatus.BAD_REQUEST);
+        }
     }
 }
