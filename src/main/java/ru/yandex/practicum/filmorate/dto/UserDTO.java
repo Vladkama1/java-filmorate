@@ -12,11 +12,12 @@ import java.util.Set;
 
 import static ru.yandex.practicum.filmorate.constants.UserConstant.EMAIL_REGEX;
 import static ru.yandex.practicum.filmorate.constants.UserConstant.LOGIN_REGEX;
+
 @Data
 @Builder
 public class UserDTO {
     @Null(groups = MarkerOfCreate.class)
-    @NotNull(groups = MarkerOfUpdate.class,message = "ID can`t null!")
+    @NotNull(groups = MarkerOfUpdate.class, message = "ID can`t null!")
     private Long id;
     @NotBlank(message = "Email not null.")
     @Email(regexp = EMAIL_REGEX, message = "Incorrect Email.")

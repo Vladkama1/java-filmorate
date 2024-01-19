@@ -9,11 +9,12 @@ import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Set;
+
 @Data
 @Builder
 public class FilmDTO {
     @Null(groups = MarkerOfCreate.class)
-    @NotNull(groups = MarkerOfUpdate.class,message = "ID can`t null!")
+    @NotNull(groups = MarkerOfUpdate.class, message = "ID can`t null!")
     private Long id;
     @NotBlank(message = "Name can`t null!")
     private String name;
