@@ -3,40 +3,46 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.exceptions.ValidException;
+import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.storage.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.List;
+
+import static ru.yandex.practicum.filmorate.constants.FilmConstant.FILM_RELEASE;
 
 @Service
 @RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
     private final FilmStorage filmStorage;
     private final UserStorage userStorage;
+    private final FilmMapper mapper;
 
     @Override
-    public Film findById(Long id) {
-        return filmStorage.findById(id)
-                .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND));
+    public FilmDTO findById(Long id) {
+        return mapper.toDTO(filmStorage.findById(id)
+                .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND)));
     }
 
     @Override
-    public List<Film> getAllFilm() {
-        return filmStorage.findAll();
+    public List<FilmDTO> getAllFilm() {
+        return mapper.toListDTO(filmStorage.findAll());
     }
 
     @Override
-    public Film saveFilm(Film film) {
-        return filmStorage.save(film);
+    public FilmDTO saveFilm(FilmDTO filmDTO) {
+        validatedReleaseFilm(filmDTO);
+        return mapper.toDTO(filmStorage.save(mapper.toModel(filmDTO)));
     }
 
     @Override
-    public Film updateFilm(Film film) {
-
-        return filmStorage.update(film)
-                .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND));
+    public FilmDTO updateFilm(FilmDTO filmDTO) {
+        validatedReleaseFilm(filmDTO);
+        return mapper.toDTO(filmStorage.update(mapper.toModel(filmDTO))
+                .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND)));
     }
 
     @Override
@@ -46,8 +52,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<Film> getPopularFilms(String count) {
-        return filmStorage.getPopularFilm(Integer.valueOf(count));
+    public List<FilmDTO> getPopularFilms(String count) {
+        return mapper.toListDTO(filmStorage.getPopularFilm(Integer.valueOf(count)));
     }
 
     @Override
@@ -72,6 +78,12 @@ public class FilmServiceImpl implements FilmService {
             throw new NotFoundException(filmNotFound + filmId, HttpStatus.NOT_FOUND);
         } else if (!isExistUser) {
             throw new NotFoundException(userNotFound + userId, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    private void validatedReleaseFilm(FilmDTO filmDTO) {
+        if (filmDTO.getReleaseDate().isBefore(FILM_RELEASE)) {
+            throw new ValidException("Data release before 28.12.1895 year", HttpStatus.BAD_REQUEST);
         }
     }
 }

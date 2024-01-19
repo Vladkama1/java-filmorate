@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -14,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class FilmTest {
     Validator validator;
-    Film film = Film.builder()
+    FilmDTO film = FilmDTO.builder()
             .name("film name")
             .description("film description")
             .releaseDate(LocalDate.of(1997, 3, 24))
@@ -31,7 +32,7 @@ class FilmTest {
     @Test
     void notNullName() {
         film.setName("");
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<FilmDTO>> violations = validator.validate(film);
         assertEquals(1, violations.size());
         assertEquals("Name can`t null!", violations.iterator().next().getMessage());
     }
@@ -45,7 +46,7 @@ class FilmTest {
                 " к преступлениям орков, те предпочитают селиться в криминальных гетто.\n" +
                 "Патрульный полицейский Дэрил Ворд вынужден работать в паре с орком-полицейским Джакоби\n" +
                 " - та ещё невидаль.");
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<FilmDTO>> violations = validator.validate(film);
         assertEquals(1, violations.size());
         assertEquals("Max size 200!", violations.iterator().next().getMessage());
     }
@@ -53,7 +54,7 @@ class FilmTest {
     @Test
     void createFailDuration() {
         film.setDuration(-100);
-        Set<ConstraintViolation<Film>> violations = validator.validate(film);
+        Set<ConstraintViolation<FilmDTO>> violations = validator.validate(film);
         assertEquals(1, violations.size());
         assertEquals("Duration not positive", violations.iterator().next().getMessage());
     }

@@ -2,7 +2,9 @@ package ru.yandex.practicum.filmorate.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.dto.UserDTO;
+import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.mapper.UserMapperImpl;
 import ru.yandex.practicum.filmorate.service.UserService;
 import ru.yandex.practicum.filmorate.service.UserServiceImpl;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
@@ -13,11 +15,12 @@ import java.time.LocalDate;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class UserControllerTest {
+    private UserMapper mapper = new UserMapperImpl();
     private UserStorage userStorage = new InMemoryUserStorage();
-    private UserService userService = new UserServiceImpl(userStorage);
+    private UserService userService = new UserServiceImpl(userStorage, mapper);
     private UserController userController;
 
-    User user = User.builder()
+    UserDTO user = UserDTO.builder()
             .name("user name")
             .email("lovt.vlad@mail.ru")
             .login("kama")
@@ -33,6 +36,6 @@ class UserControllerTest {
     void nameNullLogin() {
         user.setName("");
         userController.saveUser(user);
-        assertEquals(user.getLogin(), user.getLogin());
+        assertEquals(user.getName(), user.getLogin());
     }
 }

@@ -2,14 +2,19 @@ package ru.yandex.practicum.filmorate.controller;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.anotation.MarkerOfCreate;
+import ru.yandex.practicum.filmorate.anotation.MarkerOfUpdate;
+import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.service.UserService;
 
 import javax.validation.Valid;
 import java.util.List;
 
 @Slf4j
+@Validated
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -17,58 +22,63 @@ public class UserController {
     private final UserService service;
 
     @GetMapping("/{id}")
-    public User findById(@PathVariable Long id) {
+    public UserDTO findById(@PathVariable Long id) {
+        log.info("Получен запрос GET, на получения пользователя, по id: {}", id);
         return service.findById(id);
     }
 
     @GetMapping
-    public List<User> getAllUsers() {
-        log.info("Получен запрос Get.");
-        return service.getAllUsers();
+    public List<UserDTO> getAllUsers() {
+        log.info("Получен запрос GET, на получения всех пользователей.");
+        List<UserDTO> userDTOList = service.getAllUsers();
+        log.info("Получен ответ, список пользователей, размер: {}", userDTOList.size());
+        return userDTOList;
     }
 
     @GetMapping("/{id}/friends")
-    public List<User> getAllFriends(@PathVariable Long id) {
-        log.info("Получен запрос Get.");
-        return service.getAllFriends(id);
+    public List<UserDTO> getAllFriends(@PathVariable Long id) {
+        log.info("Получен запрос GET, на получение всех друзей, по id: {}", id);
+        List<UserDTO> userDTOList = service.getAllFriends(id);
+        log.info("Получен список всех друзей {}, пользователя.", userDTOList.size());
+        return userDTOList;
     }
 
     @GetMapping("/{id}/friends/common/{otherId}")
-    public List<User> getAllMutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
-        log.info("Получен запрос Get.");
-        return service.getAllMutualFriends(id, otherId);
+    public List<UserDTO> getAllMutualFriends(@PathVariable Long id, @PathVariable Long otherId) {
+        log.info("Получен запрос GET, на получение общих друзе.");
+        List<UserDTO> userDTOList = service.getAllMutualFriends(id, otherId);
+        log.info("Получен список общих друзей: {}", userDTOList.size());
+        return userDTOList;
     }
 
     @PostMapping
-    public User saveUser(@Valid @RequestBody User user) {
-        log.info("Получен запрос Post.");
-        validatedUserName(user);
-        log.info("Добавлен пользователь: {}", user.getName());
-        return service.saveUser(user);
+    @Validated({MarkerOfCreate.class})
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDTO saveUser(@Valid @RequestBody UserDTO userDTO) {
+        log.info("Получен запрос Post, на обновление данных пользователя.");
+        log.info("Добавлен пользователь: {}", userDTO.getName());
+        return service.saveUser(userDTO);
     }
 
     @PutMapping
-    public User updateUser(@Valid @RequestBody User user) {
-        log.info("Получен запрос Put.");
-        validatedUserName(user);
-        log.info("Обновлён пользователь: {}", user.getLogin());
-        return service.updateUser(user);
+    @Validated({MarkerOfUpdate.class})
+    public UserDTO updateUser(@Valid @RequestBody UserDTO userDTO) {
+        log.info("Получен запрос Put, на обновление пользователя");
+        UserDTO userDTO1 = service.updateUser(userDTO);
+        log.info("Обновлён пользователь: {}", userDTO1.getLogin());
+        return userDTO1;
     }
 
     @PutMapping("/{id}/friends/{friendId}")
     public void addFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        log.info("Получен запрос PUT, на обновления списка друзей по id: {}", id);
         service.addFriend(id, friendId);
     }
 
     @DeleteMapping("/{id}/friends/{friendId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
+        log.info("Получен запрос DELETE, удаление из друзей по id: {}", id);
         service.deleteFriend(id, friendId);
-    }
-
-    private void validatedUserName(User user) {
-        if (user.getName() == null || user.getName().isEmpty()) {
-            user.setName(user.getLogin());
-            log.warn("Имя отсутствует, поэтому имя заменено на логин: {}!", user.getLogin());
-        }
     }
 }
