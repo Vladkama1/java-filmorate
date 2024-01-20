@@ -2,6 +2,7 @@ package ru.yandex.practicum.filmorate.model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import ru.yandex.practicum.filmorate.dto.UserDTO;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validation;
@@ -16,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class UserTest {
     Validator validator;
-    User user = User.builder()
+    UserDTO user = UserDTO.builder()
             .name("user name")
             .email("lovt.vlad@mail.ru")
             .login("kama")
@@ -33,7 +34,7 @@ class UserTest {
     @Test
     void emailNotNullThisStandart() {
         user.setEmail("");
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<UserDTO>> violations = validator.validate(user);
         String valMessage = violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(""));
@@ -49,7 +50,7 @@ class UserTest {
     @Test
     void loginNotNullAndSpase() {
         user.setLogin(" ");
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<UserDTO>> violations = validator.validate(user);
         String valMessage = violations.stream()
                 .map(ConstraintViolation::getMessage)
                 .collect(Collectors.joining(""));
@@ -65,7 +66,7 @@ class UserTest {
     @Test
     void birthdayPast() {
         user.setBirthday(LocalDate.of(2050, 12, 28));
-        Set<ConstraintViolation<User>> violations = validator.validate(user);
+        Set<ConstraintViolation<UserDTO>> violations = validator.validate(user);
         assertEquals(1, violations.size());
         assertEquals("Birthday don`t future.", violations.iterator().next().getMessage());
     }
