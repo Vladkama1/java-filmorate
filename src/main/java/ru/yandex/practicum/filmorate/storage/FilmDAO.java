@@ -5,7 +5,11 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.List;
 import java.util.Optional;
 
-public interface FilmStorage {
+public interface FilmDAO {
+    /**
+     * @param id
+     * @return Film
+     */
     Optional<Film> findById(Long id);
 
     List<Film> findAll();

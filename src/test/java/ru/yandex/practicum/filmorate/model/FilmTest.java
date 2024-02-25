@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 
@@ -30,6 +31,7 @@ class FilmTest {
     }
 
     @Test
+    @DisplayName("Проверка имени на null!")
     void notNullName() {
         film.setName("");
         Set<ConstraintViolation<FilmDTO>> violations = validator.validate(film);
@@ -38,6 +40,7 @@ class FilmTest {
     }
 
     @Test
+    @DisplayName("Проверка значения на ограничения по длине!")
     void descriptionSizeMax() {
         film.setDescription("В альтернативном Лос-Анджелесе кого только не встретишь\n" +
                 "- бок о бок с людьми живут эльфы, орки и даже кентавры. Эльфы, правда, \n" +

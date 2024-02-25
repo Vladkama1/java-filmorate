@@ -1,77 +1,86 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.storage.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.FilmDAO;
+import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
 
 import static ru.yandex.practicum.filmorate.constants.FilmConstant.FILM_RELEASE;
 
 @Service
-@RequiredArgsConstructor
 public class FilmServiceImpl implements FilmService {
-    private final FilmStorage filmStorage;
-    private final UserStorage userStorage;
+    private final FilmDAO filmDAO;
+    private final UserDAO userDAO;
     private final FilmMapper mapper;
+
+    @Autowired
+    public FilmServiceImpl(@Qualifier(value = "filmDB") FilmDAO filmDAO,
+                           @Qualifier(value = "userDB") UserDAO userDAO,
+                           FilmMapper mapper) {
+        this.filmDAO = filmDAO;
+        this.userDAO = userDAO;
+        this.mapper = mapper;
+    }
 
     @Override
     public FilmDTO findById(Long id) {
-        return mapper.toDTO(filmStorage.findById(id)
+        return mapper.toDTO(filmDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND)));
     }
 
     @Override
     public List<FilmDTO> getAllFilm() {
-        return mapper.toListDTO(filmStorage.findAll());
+        return mapper.toListDTO(filmDAO.findAll());
     }
 
     @Override
     public FilmDTO saveFilm(FilmDTO filmDTO) {
         validatedReleaseFilm(filmDTO);
-        return mapper.toDTO(filmStorage.save(mapper.toModel(filmDTO)));
+        return mapper.toDTO(filmDAO.save(mapper.toModel(filmDTO)));
     }
 
     @Override
     public FilmDTO updateFilm(FilmDTO filmDTO) {
         validatedReleaseFilm(filmDTO);
-        return mapper.toDTO(filmStorage.update(mapper.toModel(filmDTO))
+        return mapper.toDTO(filmDAO.update(mapper.toModel(filmDTO))
                 .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND)));
     }
 
     @Override
     public void addLike(Long filmId, Long userId) {
         existIds(filmId, userId);
-        filmStorage.addLike(filmId, userId);
+        filmDAO.addLike(filmId, userId);
     }
 
     @Override
     public List<FilmDTO> getPopularFilms(String count) {
-        return mapper.toListDTO(filmStorage.getPopularFilm(Integer.valueOf(count)));
+        return mapper.toListDTO(filmDAO.getPopularFilm(Integer.valueOf(count)));
     }
 
     @Override
     public void deleteLike(Long id, Long userId) {
         existIds(id, userId);
-        filmStorage.deleteLike(id, userId);
+        filmDAO.deleteLike(id, userId);
     }
 
     @Override
     public void delete(Long id) {
-        filmStorage.delete(id);
+        filmDAO.delete(id);
     }
 
     private void existIds(Long filmId, Long userId) {
         String filmNotFound = "Film not found by ID: ";
         String userNotFound = "User not found by ID: ";
-        boolean isExistFilm = filmStorage.isExistById(filmId);
-        boolean isExistUser = userStorage.isExistById(userId);
+        boolean isExistFilm = filmDAO.isExistById(filmId);
+        boolean isExistUser = userDAO.isExistById(userId);
         if (!isExistUser && !isExistFilm) {
             throw new NotFoundException(filmNotFound + filmId + " " + userNotFound + userId, HttpStatus.NOT_FOUND);
         } else if (!isExistFilm) {

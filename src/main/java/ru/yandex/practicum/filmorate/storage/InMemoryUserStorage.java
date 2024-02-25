@@ -6,8 +6,8 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
-public class InMemoryUserStorage implements UserStorage {
+@Repository(value = "userMemory")
+public class InMemoryUserStorage implements UserDAO {
     private Long id = 1L;
     private final Map<Long, User> users = new HashMap<>();
 
@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public boolean delete(Long id, Long friendId) {
+    public boolean deleteFriend(Long id, Long friendId) {
         users.get(id).getFriends().remove(friendId);
         return users.get(friendId).getFriends().remove(id);
     }
