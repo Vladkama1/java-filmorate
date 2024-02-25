@@ -81,13 +81,8 @@ public class FilmDAOImpl implements FilmDAO {
                 "name = ?,release_date = ?, description = ?, " +
                 "duration = ?, mpa_id = ? " +
                 "WHERE id = ?";
-        int update = jdbcTemplate.update(sqlQuery
-                , film.getName()
-                , film.getReleaseDate()
-                , film.getDescription()
-                , film.getDuration()
-                , film.getMpa().getId()
-                , film.getId());
+        int update = jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
+                film.getDuration(), film.getMpa().getId(), film.getId());
         if (update == 0) {
             throw new NotFoundException("Фильм не найден!", HttpStatus.NOT_FOUND);
         }
