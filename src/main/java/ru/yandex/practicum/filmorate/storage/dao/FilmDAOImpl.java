@@ -25,7 +25,6 @@ import java.util.*;
 public class FilmDAOImpl implements FilmDAO {
     private final JdbcTemplate jdbcTemplate;
 
-
     @Override
     public Optional<Film> findById(Long id) {
         String sqlQuery = "SELECT F.*," +

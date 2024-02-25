@@ -49,7 +49,6 @@ public class UserDAOImpl implements UserDAO {
         return users.stream().findFirst();
     }
 
-
     @Override
     public List<User> findAll() {
         String sqlQuery = "SELECT * FROM USERS ";
