@@ -6,8 +6,8 @@ import ru.yandex.practicum.filmorate.model.Film;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Repository
-public class InMemoryFilmStorage implements FilmStorage {
+@Repository(value = "filmMemory")
+public class InMemoryFilmStorage implements FilmDAO {
     private Long id = 1L;
     private final Map<Long, Film> films = new HashMap<>();
 

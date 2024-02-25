@@ -1,22 +1,29 @@
 package ru.yandex.practicum.filmorate.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
+import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
-import ru.yandex.practicum.filmorate.storage.UserStorage;
+import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
-    private final UserStorage storage;
+    private final UserDAO storage;
     private final UserMapper mapper;
+
+    @Autowired
+    public UserServiceImpl(@Qualifier(value = "userDB") UserDAO storage, UserMapper mapper) {
+        this.storage = storage;
+        this.mapper = mapper;
+    }
 
     @Override
     public UserDTO findById(Long id) {
@@ -48,13 +55,16 @@ public class UserServiceImpl implements UserService {
     @Override
     public void addFriend(Long id, Long friendId) {
         existUser(id, friendId);
-        storage.addFriend(id, friendId);
+        boolean addedFriend = storage.addFriend(id, friendId);
+        if (!addedFriend) {
+            throw new ValidException("Дружба уже существует!", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @Override
     public void deleteFriend(Long id, Long friendId) {
         existUser(id, friendId);
-        storage.delete(id, friendId);
+        storage.deleteFriend(id, friendId);
     }
 
     @Override

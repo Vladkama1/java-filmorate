@@ -1,13 +1,15 @@
 package ru.yandex.practicum.filmorate.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Builder;
 import lombok.Data;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfCreate;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfUpdate;
+import ru.yandex.practicum.filmorate.model.Genre;
+import ru.yandex.practicum.filmorate.model.MPA;
 
 import javax.validation.constraints.*;
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Set;
 
 @Data
@@ -22,6 +24,9 @@ public class FilmDTO {
     private String description;
     private LocalDate releaseDate;
     @Positive(message = "Duration not positive")
-    private int duration;
-    private final Set<Long> likes = new HashSet<>();
+    private Integer duration;
+    @JsonIgnore
+    private Set<Long> likes;
+    private Set<Genre> genres;
+    private MPA mpa;
 }

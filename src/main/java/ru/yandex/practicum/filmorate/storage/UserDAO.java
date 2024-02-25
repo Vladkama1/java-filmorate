@@ -5,7 +5,7 @@ import ru.yandex.practicum.filmorate.model.User;
 import java.util.List;
 import java.util.Optional;
 
-public interface UserStorage {
+public interface UserDAO {
     User save(User user);
 
     Optional<User> findById(Long id);
@@ -14,7 +14,7 @@ public interface UserStorage {
 
     Optional<User> update(User user);
 
-    boolean delete(Long id, Long friendId);
+    boolean deleteFriend(Long id, Long friendId);
 
     boolean isExistById(Long id);
 
