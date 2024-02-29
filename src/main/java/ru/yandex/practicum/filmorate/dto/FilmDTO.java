@@ -22,6 +22,7 @@ public class FilmDTO {
     private String name;
     @Size(min = 1, max = 200, message = "Max size 200!")
     private String description;
+    //@DateIsAfter(value = FILM_RELEASE_DATE, message = "Data release before 28.12.1895 year")
     private LocalDate releaseDate;
     @Positive(message = "Duration not positive")
     private Integer duration;
