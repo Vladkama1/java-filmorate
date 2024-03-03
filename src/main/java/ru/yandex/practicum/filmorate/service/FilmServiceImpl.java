@@ -6,14 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
-import ru.yandex.practicum.filmorate.exceptions.ValidException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
-
-import static ru.yandex.practicum.filmorate.constants.FilmConstant.FILM_RELEASE;
 
 @Service
 public class FilmServiceImpl implements FilmService {
@@ -43,13 +40,11 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public FilmDTO saveFilm(FilmDTO filmDTO) {
-        validatedReleaseFilm(filmDTO);
         return mapper.toDTO(filmDAO.save(mapper.toModel(filmDTO)));
     }
 
     @Override
     public FilmDTO updateFilm(FilmDTO filmDTO) {
-        validatedReleaseFilm(filmDTO);
         return mapper.toDTO(filmDAO.update(mapper.toModel(filmDTO))
                 .orElseThrow(() -> new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND)));
     }
@@ -87,12 +82,6 @@ public class FilmServiceImpl implements FilmService {
             throw new NotFoundException(filmNotFound + filmId, HttpStatus.NOT_FOUND);
         } else if (!isExistUser) {
             throw new NotFoundException(userNotFound + userId, HttpStatus.NOT_FOUND);
-        }
-    }
-
-    private void validatedReleaseFilm(FilmDTO filmDTO) {
-        if (filmDTO.getReleaseDate().isBefore(FILM_RELEASE)) {
-            throw new ValidException("Data release before 28.12.1895 year", HttpStatus.BAD_REQUEST);
         }
     }
 }
