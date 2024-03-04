@@ -69,7 +69,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void delete(Long id) {
-        storage.delete(id);
+        boolean deleted = storage.delete(id);
+        if (!deleted) {
+            throw new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND);
+        }
     }
 
     @Override
