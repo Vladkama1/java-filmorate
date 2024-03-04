@@ -70,11 +70,11 @@ public class FilmController {
         service.addLike(id, userId);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{filmId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete(@PathVariable Long id) {
-        log.info("Получен запрос DELETE, на удаления фильма, по id: {}", id);
-        service.delete(id);
+    public void delete(@PathVariable Long filmId) {
+        log.info("Получен запрос DELETE, на удаления фильма, по id: {}", filmId);
+        service.delete(filmId);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
