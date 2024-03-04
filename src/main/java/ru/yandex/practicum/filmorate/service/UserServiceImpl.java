@@ -38,6 +38,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDTO> getAllFriends(Long id) {
+        boolean existById = storage.isExistById(id);
+        if (!existById) {
+            throw new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND);
+        }
         return mapper.toListDTO(storage.getAllFriends(id));
     }
 
