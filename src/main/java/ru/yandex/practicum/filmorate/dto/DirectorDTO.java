@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.dto;
 
 public class DirectorDTO {
-    Long id;
+    private Long id;
+    private String name;
 }
