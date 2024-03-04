@@ -1,0 +1,285 @@
+-- MERGE INTO films (ID, NAME, DESCRIPTION, RELEASE_DATE, DURATION, MPA_ID)
+--     VALUES (1, '1-NAME', '1-DESCRIPTION', '1967-03-25', 10, 1),
+--            (2, '2-NAME', '2-DESCRIPTION', '1967-03-25', 10, 1),
+--            (3, '3-NAME', '3-DESCRIPTION', '1967-03-25', 10, 1),
+--            (4, '4-NAME', '4-DESCRIPTION', '1967-03-25', 10, 1),
+--            (5, '5-NAME', '5-DESCRIPTION', '1967-03-25', 10, 1),
+--            (6, '6-NAME', '6-DESCRIPTION', '1967-03-25', 10, 1),
+--            (7, '7-NAME', '7-DESCRIPTION', '1967-03-25', 10, 1),
+--            (8, '8-NAME', '8-DESCRIPTION', '1967-03-25', 10, 1),
+--            (9, '9-NAME', '9-DESCRIPTION', '1967-03-25', 10, 1),
+--            (10, '10-NAME', '10-DESCRIPTION', '1967-03-25', 10, 1),
+--            (11, '11-NAME', '11-DESCRIPTION', '1967-03-25', 10, 1),
+--            (12, '12-NAME', '12-DESCRIPTION', '1967-03-25', 10, 1);
+--
+-- MERGE INTO USERS (ID, EMAIL, LOGIN, NAME, BIRTHDAY)
+--     VALUES (1, '1-EMAIL@mail.ru', '1-LOGIN', '1-NAME', '1967-03-25'),
+--            (2, '2-EMAIL@mail.ru', '2-LOGIN', '2-NAME', '1967-03-25'),
+--            (3, '3-EMAIL@mail.ru', '3-LOGIN', '3-NAME', '1967-03-25'),
+--            (4, '4-EMAIL@mail.ru', '4-LOGIN', '4-NAME', '1967-03-25'),
+--            (5, '5-EMAIL@mail.ru', '5-LOGIN', '5-NAME', '1967-03-25'),
+--            (6, '6-EMAIL@mail.ru', '6-LOGIN', '6-NAME', '1967-03-25'),
+--            (7, '7-EMAIL@mail.ru', '7-LOGIN', '7-NAME', '1967-03-25'),
+--            (8, '8-EMAIL@mail.ru', '8-LOGIN', '8-NAME', '1967-03-25');
+--
+-- MERGE INTO FILMS_USERS (film_id, user_id)
+--     VALUES (1, 1),
+--            (1, 2),
+--            (1, 3),
+--            (1, 4),
+--            (1, 5),
+--            (1, 6),
+--            (1, 7),
+--            (2, 1),
+--            (2, 2),
+--            (2, 3),
+--            (2, 4),
+--            (2, 5),
+--            (2, 6),
+--            (2, 7),
+--            (3, 1),
+--            (3, 2),
+--            (3, 3),
+--            (3, 4),
+--            (4, 1),
+--            (4, 2),
+--            (4, 3),
+--            (4, 4),
+--            (5, 1),
+--            (5, 2),
+--            (5, 3),
+--            (5, 4),
+--            (6, 1),
+--            (6, 2),
+--            (6, 3),
+--            (6, 4),
+--            (7, 1),
+--            (7, 2),
+--            (7, 3),
+--            (7, 4),
+--            (8, 1),
+--            (8, 2),
+--            (8, 3),
+--            (8, 4),
+--            (9, 1),
+--            (9, 2),
+--            (9, 3),
+--            (9, 4),
+--            (9, 5),
+--            (9, 6),
+--            (9, 7),
+--            (9, 8),
+--            (11, 1),
+--            (11, 2),
+--            (11, 3),
+--            (11, 4),
+--            (12, 1),
+--            (12, 2),
+--            (12, 3),
+--            (10, 1),
+--            (10, 2),
+--            (10, 3);
+--
+-- INSERT INTO FILMS_GENRES (film_id, genre_id)
+-- VALUES (1, 1),
+--        (1, 2),
+--        (2, 2),
+--        (2, 3),
+--        (2, 4),
+--        (3, 1),
+--        (3, 2),
+--        (3, 4),
+--        (4, 5);
+--
+-- MERGE INTO FRIENDSHIPS (user1_id, user2_id, status)
+--     VALUES (1, 2, true),
+--            (2, 3, false),
+--            (3, 1, true),
+--            (4, 1, false),
+--            (5, 2, true),
+--            (6, 2, true),
+--            (7, 4, true),
+--            (1, 7, true),
+--            (3, 6, true),
+--            (5, 6, true),
+--            (6, 7, true);
+-- -- SELECT F.*, M.name, G.id, G.name
+-- -- FROM FILMS AS F
+-- --          LEFT JOIN PUBLIC.MPA M on M.ID = F.MPA_ID
+-- --          LEFT JOIN PUBLIC.FILMS_GENRES FG on F.ID = FG.FILM_ID
+-- --          LEFT JOIN PUBLIC.GENRES G on G.ID = FG.GENRE_ID
+-- -- WHERE F.ID = 2;
+-- --
+-- -- INSERT INTO FILMS_USERS (FILM_ID, USER_ID)
+-- -- VALUES (5, 8);
+-- --
+-- -- SELECT EXISTS(SELECT 1 FROM FILMS WHERE ID = ?);
+-- --
+-- -- -- SELECT f.*,(SELECT GROUP_CONCAT(USER_ID)
+-- -- --           FROM FILMS_USERS
+-- -- --           WHERE FILM_ID = f.ID) AS LIKES
+-- -- -- FROM FILMS AS f
+-- -- -- LEFT JOIN PUBLIC.FILMS_USERS FU on f.ID = FU.FILM_ID
+-- -- -- GROUP BY f.ID
+-- -- -- ORDER BY COUNT(FU.USER_ID) DESC , f.ID
+-- -- -- LIMIT 10;
+-- --
+-- -- SELECT f.*,
+-- --        M.name,
+-- --        (SELECT GROUP_CONCAT(NAME)
+-- --         FROM GENRES
+-- --         WHERE ID IN (SELECT GENRE_ID
+-- --                      FROM FILMS_GENRES
+-- --                      WHERE FILM_ID = f.ID)) AS genres_names,
+-- --        (SELECT GROUP_CONCAT(GENRE_ID)
+-- --         FROM FILMS_GENRES
+-- --         WHERE FILM_ID = f.ID)               AS genres_id,
+-- --        (SELECT GROUP_CONCAT(USER_ID)
+-- --         FROM PUBLIC.FILMS_USERS
+-- --         WHERE FILM_ID = f.ID)               AS LIKES
+-- -- FROM FILMS AS f
+-- --          LEFT JOIN PUBLIC.FILMS_USERS FL on F.ID = FL.FILM_ID
+-- --          LEFT JOIN PUBLIC.MPA M on M.ID = f.MPA_ID
+-- -- GROUP BY f.ID
+-- -- ORDER BY COUNT(FL.USER_ID) DESC, F.ID
+-- -- LIMIT 10;
+-- --
+-- -- SELECT NAME
+-- -- FROM GENRES
+-- -- WHERE ID = ();
+-- --
+-- SELECT F.*,
+--        M.name               as mpa_name,
+--        GROUP_CONCAT(G.id)   as genre_id,
+--        GROUP_CONCAT(G.name) as genre_name,
+--        COUNT(FU.USER_ID)
+-- FROM FILMS AS F
+--          LEFT JOIN PUBLIC.MPA M on M.ID = F.MPA_ID
+--          LEFT JOIN PUBLIC.FILMS_GENRES FG on F.ID = FG.FILM_ID
+--          LEFT JOIN PUBLIC.GENRES G on G.ID = FG.GENRE_ID
+--          LEFT JOIN PUBLIC.FILMS_USERS FU on F.ID = FU.FILM_ID
+-- GROUP BY F.ID
+-- ORDER BY COUNT(USER_ID) DESC
+-- LIMIT 3
+
+
+
+-- SELECT f.*,
+--        M.name,
+--        (SELECT GROUP_CONCAT(NAME)
+--         FROM GENRES
+--         WHERE ID IN (SELECT GENRE_ID
+--                      FROM FILMS_GENRES
+--                      WHERE FILM_ID = f.ID)) AS genres_names,
+--        (SELECT GROUP_CONCAT(GENRE_ID)
+--         FROM FILMS_GENRES
+--         WHERE FILM_ID = f.ID)               AS genres_id,
+--        (SELECT GROUP_CONCAT(USER_ID)
+--         FROM PUBLIC.FILMS_USERS
+--         WHERE FILM_ID = f.ID)               AS LIKES
+-- FROM FILMS AS f
+--          LEFT JOIN PUBLIC.FILMS_USERS FL on F.ID = FL.FILM_ID
+--          LEFT JOIN PUBLIC.MPA M on M.ID = f.MPA_ID
+-- GROUP BY f.ID
+-- ORDER BY COUNT(FL.USER_ID) DESC, F.ID
+-- LIMIT ?;
+-- --
+-- -- SELECT U.*
+-- -- FROM USERS AS U
+-- --          LEFT JOIN PUBLIC.FRIENDSHIPS F on U.ID = F.USER1_ID and U.ID = F.USER2_ID;
+-- --
+-- -- SELECT F.*
+-- -- FROM USERS
+-- --          LEFT JOIN PUBLIC.FRIENDSHIPS F on USERS.ID = F.USER1_ID
+-- -- WHERE ID = ?;
+-- -- SELECT *
+-- -- FROM USERS
+-- -- WHERE ID IN (
+-- --     SELECT f.USER1_ID
+-- --     FROM FRIENDSHIPS f
+-- --     WHERE f.USER2_ID = 1
+-- --     UNION
+-- --     SELECT f.USER2_ID
+-- --     FROM FRIENDSHIPS f
+-- --     WHERE f.USER1_ID = 1
+-- --       AND f.STATUS = TRUE
+-- --     INTERSECT
+-- --     SELECT f.USER1_ID
+-- --     FROM FRIENDSHIPS f
+-- --     WHERE f.USER2_ID = 2
+-- --     UNION
+-- --     SELECT f.USER2_ID
+-- --     FROM FRIENDSHIPS f
+-- --     WHERE f.USER1_ID = 2
+-- --       AND f.STATUS = TRUE);
+-- --
+-- -- SELECT f.USER1_ID
+-- -- FROM FRIENDSHIPS f
+-- -- WHERE f.USER2_ID = 2
+-- -- UNION
+-- -- SELECT f.USER2_ID
+-- -- FROM FRIENDSHIPS f
+-- -- WHERE f.USER1_ID = 2
+-- --   AND f.STATUS = TRUE;
+-- --
+-- -- SELECT M.name AS mpa_name
+-- -- FROM FILMS AS F
+-- --          LEFT JOIN PUBLIC.MPA M on M.ID = F.MPA_ID;
+-- --
+-- -- SELECT F.*, M.name, G.id AS genre_id, G.name AS genre_name
+-- -- FROM FILMS AS F
+-- --          LEFT JOIN PUBLIC.MPA M on M.ID = F.MPA_ID
+-- --          LEFT JOIN PUBLIC.FILMS_GENRES FG on F.ID = FG.FILM_ID
+-- --          LEFT JOIN PUBLIC.GENRES G on G.ID = FG.GENRE_ID;
+-- --
+-- -- SELECT GROUP_CONCAT(G.id)   as genre_id,
+-- --        GROUP_CONCAT(G.name) as genre_name
+-- -- FROM FILMS AS F
+-- --          LEFT JOIN PUBLIC.FILMS_GENRES FG on F.ID = FG.FILM_ID
+-- --          LEFT JOIN PUBLIC.GENRES G on G.ID = FG.GENRE_ID
+-- -- WHERE F.ID = ?
+-- -- GROUP BY F.ID;
+-- --
+-- -- SELECT  G.name AS genre_name
+-- -- FROM FILMS AS F
+-- --          LEFT JOIN PUBLIC.FILMS_GENRES FG on F.ID = FG.FILM_ID
+-- --          LEFT JOIN PUBLIC.GENRES G on G.ID = FG.GENRE_ID;
+-- --
+-- -- SELECT *
+-- -- FROM MPA
+-- --
+-- -- SELECT f.USER1_ID
+-- -- FROM FRIENDSHIPS f
+-- -- WHERE f.USER2_ID = 1
+-- -- UNION
+-- -- SELECT f.USER2_ID
+-- -- FROM FRIENDSHIPS f
+-- -- WHERE f.USER1_ID = 1
+-- --   AND f.STATUS = TRUE;
+-- SELECT *
+-- FROM USERS
+-- WHERE ID IN ( SELECT * FROM (
+--     SELECT f.USER2_ID
+--     FROM FRIENDSHIPS f
+--     WHERE f.USER1_ID = ?
+--     UNION
+--     SELECT f.USER1_ID
+--     FROM FRIENDSHIPS f
+--     WHERE f.USER2_ID = ? AND f.STATUS = TRUE)
+--     INTERSECT
+--     (SELECT f.USER2_ID
+--     FROM FRIENDSHIPS f
+--     WHERE f.USER1_ID = ?
+--     UNION
+--     SELECT f.USER1_ID
+--     FROM FRIENDSHIPS f
+--     WHERE f.USER2_ID = ? AND f.STATUS = TRUE));
+--
+-- SELECT f.USER1_ID
+-- FROM FRIENDSHIPS f
+-- WHERE f.USER2_ID = ?
+-- UNION
+-- SELECT f.USER2_ID
+-- FROM FRIENDSHIPS f
+-- WHERE f.USER1_ID = ?
+--   AND f.STATUS = TRUE
