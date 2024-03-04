@@ -19,5 +19,7 @@ public interface UserService {
 
     void deleteFriend(Long id, Long friendId);
 
+    void delete(Long id);
+
     UserDTO updateUser(UserDTO userDTO);
 }

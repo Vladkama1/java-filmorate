@@ -45,6 +45,15 @@ public class InMemoryUserStorage implements UserDAO {
     }
 
     @Override
+    public boolean delete(Long id) {
+        User user = users.remove(id);
+        if (user == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
     public boolean isExistById(Long id) {
         return users.containsKey(id);
     }
