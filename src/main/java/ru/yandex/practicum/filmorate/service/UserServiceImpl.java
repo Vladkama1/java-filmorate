@@ -68,6 +68,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void delete(Long id) {
+        storage.delete(id);
+    }
+
+    @Override
     public UserDTO updateUser(UserDTO userDTO) {
         validatedUserName(userDTO);
         return mapper.toDTO(storage.update(mapper.toModel(userDTO))
