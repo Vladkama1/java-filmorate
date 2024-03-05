@@ -81,7 +81,10 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public void delete(Long id) {
-        filmDAO.delete(id);
+        boolean deleted = filmDAO.delete(id);
+        if (!deleted) {
+            throw new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND);
+        }
     }
 
     private void existIds(Long filmId, Long userId) {

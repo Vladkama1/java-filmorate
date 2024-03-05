@@ -16,6 +16,8 @@ public interface UserDAO {
 
     boolean deleteFriend(Long id, Long friendId);
 
+    boolean delete(Long id);
+
     boolean isExistById(Long id);
 
     boolean addFriend(Long id, Long friendId);
