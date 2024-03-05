@@ -46,13 +46,22 @@ public class FilmController {
         return filmList;
     }
 
+    @GetMapping("/director/{directorId}")
+    public List<FilmDTO> getFilmsByDirector(@PathVariable Long directorId, @RequestParam(defaultValue = "year") String sortBy) {
+        log.info("Запрос GET, на получение фильмов режиссера с id {} отсортированных по {}.", directorId, sortBy);
+        List<FilmDTO> filmList = service.getFilmsByDirectorId(directorId, sortBy);
+        log.info("Получен список из {} фильмов, режиссера с id: {}.", filmList.size(), directorId);
+        return filmList;
+    }
+
     @PostMapping
     @Validated({MarkerOfCreate.class})
     @ResponseStatus(HttpStatus.CREATED)
     public FilmDTO createFilm(@Valid @RequestBody FilmDTO filmDTO) {
         log.info("Получен запрос Post, по фильму: {}", filmDTO);
-        log.info("Добавлен фильм: {}", filmDTO);
-        return service.saveFilm(filmDTO);
+        FilmDTO film = service.saveFilm(filmDTO);
+        log.info("Добавлен фильм: {}", film);
+        return film;
     }
 
     @PutMapping

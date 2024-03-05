@@ -30,5 +30,6 @@ public class FilmDTO {
     @JsonIgnore
     private Set<Long> likes;
     private Set<GenreDTO> genres;
+    private Set<DirectorDTO> directors;
     private MpaDTO mpa;
 }

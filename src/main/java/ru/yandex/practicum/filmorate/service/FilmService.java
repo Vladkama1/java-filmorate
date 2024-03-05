@@ -11,6 +11,8 @@ public interface FilmService {
 
     List<FilmDTO> getPopularFilms(String count);
 
+    List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy);
+
     FilmDTO saveFilm(FilmDTO filmDTO);
 
     FilmDTO updateFilm(FilmDTO filmDTO);

@@ -27,4 +27,6 @@ public interface FilmDAO {
     boolean deleteLike(Long filmId, Long userId);
 
     List<Film> getPopularFilm(Integer count);
+
+    List<Film> findAllFilmsByDirectorId(Long directorId, String sortBy);
 }

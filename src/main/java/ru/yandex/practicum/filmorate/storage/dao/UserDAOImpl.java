@@ -25,7 +25,7 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public User save(User user) {
-        String sqlQuery = "INSERT INTO USERS(NAME, EMAIL, LOGIN, BIRTHDAY) VALUES ( ?, ?, ?, ? )";
+        String sqlQuery = "INSERT INTO users(name, email, login, birthday) VALUES ( ?, ?, ?, ? )";
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(con -> {
             PreparedStatement statement = con.prepareStatement(sqlQuery, new String[]{"id"});
@@ -43,21 +43,21 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public Optional<User> findById(Long id) {
         String sqlQuery = "SELECT *" +
-                "FROM USERS " +
-                "WHERE ID = ?";
+                "FROM users " +
+                "WHERE id = ?";
         List<User> users = jdbcTemplate.query(sqlQuery, this::mapRowToUsers, id);
         return users.stream().findFirst();
     }
 
     @Override
     public List<User> findAll() {
-        String sqlQuery = "SELECT * FROM USERS ";
+        String sqlQuery = "SELECT * FROM users ";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUsers);
     }
 
     @Override
     public Optional<User> update(User user) {
-        String sqlQuery = "UPDATE USERS SET " +
+        String sqlQuery = "UPDATE users SET " +
                 "name = ?, email = ?, login = ?, " +
                 "birthday = ? " +
                 "WHERE id = ?";
@@ -72,43 +72,43 @@ public class UserDAOImpl implements UserDAO {
 
     @Override
     public boolean deleteFriend(Long id, Long friendId) {
-        String sqlQuery = "DELETE FROM FRIENDSHIPS " +
-                "WHERE (USER1_ID = ? AND USER2_ID = ?)" +
-                "OR (USER1_ID = ? AND USER2_ID = ?)";
+        String sqlQuery = "DELETE FROM friendships " +
+                "WHERE (user1_id = ? AND user2_id = ?)" +
+                "OR (user1_id = ? AND user2_id = ?)";
         return jdbcTemplate.update(sqlQuery, id, friendId, friendId, id) > 0;
     }
 
     @Override
     public boolean isExistById(Long id) {
-        String sqlQuery = "SELECT EXISTS(SELECT 1 FROM USERS WHERE ID = ?)";
+        String sqlQuery = "SELECT EXISTS(SELECT 1 FROM users WHERE id = ?)";
         return jdbcTemplate.queryForObject(sqlQuery, Boolean.class, id);
     }
 
     @Override
     public boolean addFriend(Long id, Long friendId) {
-        String sqlQuery = "INSERT INTO FRIENDSHIPS(USER1_ID, USER2_ID) " +
+        String sqlQuery = "INSERT INTO friendships(user1_id, user2_id) " +
                 "SELECT ?, ? " +
                 "FROM DUAl " +
                 "WHERE NOT EXISTS " +
                 "(SELECT 1 FROM " +
-                "FRIENDSHIPS " +
-                "WHERE (USER1_ID = ? AND USER2_ID = ?) " +
-                "OR (USER1_ID = ? AND USER2_ID = ?))";
+                "friendships " +
+                "WHERE (user1_id = ? AND user2_id = ?) " +
+                "OR (user1_id = ? AND user2_id = ?))";
         return jdbcTemplate.update(sqlQuery, id, friendId, id, friendId, friendId, id) > 0;
     }
 
     @Override
     public List<User> getAllFriends(Long id) {
         String sqlQuery = "SELECT u.* " +
-                "FROM USERS u " +
+                "FROM users u " +
                 "WHERE u.id IN " +
-                "(SELECT f.USER2_ID " +
-                "FROM FRIENDSHIPS f " +
-                "WHERE f.USER1_ID = ? " +
+                "(SELECT f.user2_id " +
+                "FROM friendships AS f " +
+                "WHERE f.user1_id = ? " +
                 "UNION " +
-                "SELECT f.USER1_ID " +
-                "FROM FRIENDSHIPS f   " +
-                "WHERE f.USER2_ID = ? " +
+                "SELECT f.user1_id " +
+                "FROM friendships AS f   " +
+                "WHERE f.user2_id = ? " +
                 "AND f.status = TRUE)";
         List<User> users = jdbcTemplate.query(sqlQuery, this::mapRowToUsers, id, id);
         return users.stream()
@@ -119,23 +119,23 @@ public class UserDAOImpl implements UserDAO {
     @Override
     public List<User> getAllMutualFriends(Long id, Long otherId) {
         String sqlQuery = "SELECT *" +
-                "FROM USERS " +
+                "FROM users " +
                 "WHERE ID IN ( SELECT * FROM (" +
-                "    SELECT f.USER2_ID" +
-                "    FROM FRIENDSHIPS f" +
-                "    WHERE f.USER1_ID = ?" +
+                "    SELECT f.user2_id" +
+                "    FROM friendships AS f" +
+                "    WHERE f.user1_id = ?" +
                 "    UNION" +
-                "    SELECT f.USER1_ID" +
-                "    FROM FRIENDSHIPS f" +
-                "    WHERE f.USER2_ID = ? AND f.STATUS = TRUE)" +
+                "    SELECT f.user1_id" +
+                "    FROM friendships AS f" +
+                "    WHERE f.user2_id = ? AND f.status = TRUE)" +
                 "    INTERSECT" +
-                "    (SELECT f.USER2_ID" +
-                "    FROM FRIENDSHIPS f" +
-                "    WHERE f.USER1_ID = ?" +
+                "    (SELECT f.user2_id" +
+                "    FROM friendships AS f" +
+                "    WHERE f.user1_id = ?" +
                 "    UNION" +
-                "    SELECT f.USER1_ID" +
-                "    FROM FRIENDSHIPS f" +
-                "    WHERE f.USER2_ID = ? AND f.STATUS = TRUE))";
+                "    SELECT f.user1_id" +
+                "    FROM friendships AS f" +
+                "    WHERE f.user2_id = ? AND f.status = TRUE))";
         return jdbcTemplate.query(sqlQuery, this::mapRowToUsers, id, id, otherId, otherId);
     }
 
