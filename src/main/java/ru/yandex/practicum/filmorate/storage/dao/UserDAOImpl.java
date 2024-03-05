@@ -79,6 +79,13 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
+    public boolean delete(Long id) {
+        String sqlQuery = "DELETE FROM USERS " +
+                "WHERE ID = ?";
+        return jdbcTemplate.update(sqlQuery, id) > 0;
+    }
+
+    @Override
     public boolean isExistById(Long id) {
         String sqlQuery = "SELECT EXISTS(SELECT 1 FROM USERS WHERE ID = ?)";
         return jdbcTemplate.queryForObject(sqlQuery, Boolean.class, id);
