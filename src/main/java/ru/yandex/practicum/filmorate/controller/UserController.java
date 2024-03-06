@@ -27,6 +27,11 @@ public class UserController {
         return service.findById(id);
     }
 
+    @GetMapping("/{id}")
+    public List<UserDTO> getRecommendations() {
+        return null;
+    }
+
     @GetMapping
     public List<UserDTO> getAllUsers() {
         log.info("Получен запрос GET, на получения всех пользователей.");
