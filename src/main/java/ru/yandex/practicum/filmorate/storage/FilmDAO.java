@@ -1,16 +1,12 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface FilmDAO {
-    /**
-     * @param id
-     * @return Film
-     */
+
     Optional<Film> findById(Long id);
 
     List<Film> findAll();
@@ -27,9 +23,7 @@ public interface FilmDAO {
 
     boolean deleteLike(Long filmId, Long userId);
 
-    List<Film> getPopularFilm(Integer count);
-
-    List<FilmDTO> getPopularFilmsByGenreIdForYear(String count, Long genreId, Integer year);
+    List<Film> getPopularFilm(Integer count, Integer genreId, Integer year);
 
     List<Film> findAllFilmsByDirectorId(Long directorId, String sortBy);
 }

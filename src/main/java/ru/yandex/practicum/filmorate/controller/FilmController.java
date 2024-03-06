@@ -14,7 +14,7 @@ import javax.validation.Valid;
 import javax.validation.constraints.Positive;
 import java.util.List;
 
-import static ru.yandex.practicum.filmorate.constants.FilmConstant.*;
+import static ru.yandex.practicum.filmorate.constants.FilmConstant.POPULAR_FILMS;
 
 @Slf4j
 @Validated
@@ -41,19 +41,11 @@ public class FilmController {
     }
 
     @GetMapping("/popular")
-    public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) String count) {
-        log.info("Запрос GET, на получение топ {} фильмов.", count);
-        List<FilmDTO> filmList = service.getPopularFilms(count);
-        log.info("Получен топ {} фильмов: {}", count, filmList.size());
-        return filmList;
-    }
-
-    @GetMapping("/popular")
-    public List<FilmDTO> getPopularFilmsByGenreIdForYear(@Positive @RequestParam(defaultValue = POPULAR_FILMS) String count,
-                                                         @RequestParam(defaultValue = POPULAR_FILMS_GENRE_ID) Long genreId,
-                                                         @RequestParam(defaultValue = POPULAR_FILMS_YEAR) Integer year) {
+    public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) String count,
+                                         @RequestParam(required = false) Integer genreId,
+                                         @RequestParam(required = false) Integer year) {
         log.info("Запрос GET, на получение топ {} фильмов по id: {} жанра за {} год.", count, genreId, year);
-        List<FilmDTO> filmList = service.getPopularFilmsByGenreIdForYear(count, genreId, year);
+        List<FilmDTO> filmList = service.getPopularFilms(count, genreId, year);
         log.info("Получен топ {} фильмов: {}", count, filmList.size());
         return filmList;
     }

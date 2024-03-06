@@ -76,7 +76,7 @@ class FilmDAOImplTest {
         assertTrue(isAddedTrue2);
 
         dao.addLike(optionalFilm.get().getId(), user1Opt.get().getId());
-        List<Film> popularFilm = dao.getPopularFilm(1);
+        List<Film> popularFilm = dao.getPopularFilm(1, null, null);
         for (Film film2 : popularFilm) {
             System.out.println(film2);
         }
