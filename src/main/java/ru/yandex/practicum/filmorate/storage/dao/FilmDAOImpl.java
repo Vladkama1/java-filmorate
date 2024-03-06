@@ -8,6 +8,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
@@ -154,6 +155,11 @@ public class FilmDAOImpl implements FilmDAO {
                 "LIMIT ?";
 
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilms, count);
+    }
+
+    @Override
+    public List<FilmDTO> getPopularFilmsByGenreIdForYear(String count, Long genreId, Integer year) {
+        return null;
     }
 
     @Override

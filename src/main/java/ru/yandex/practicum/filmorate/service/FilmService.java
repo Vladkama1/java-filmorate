@@ -10,6 +10,7 @@ public interface FilmService {
     List<FilmDTO> getAllFilm();
 
     List<FilmDTO> getPopularFilms(String count);
+    List<FilmDTO> getPopularFilmsByGenreIdForYear(String count, Long genreId, Integer year);
 
     List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy);
 

@@ -65,6 +65,11 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
+    public List<FilmDTO> getPopularFilmsByGenreIdForYear(String count, Long genreId, Integer year) {
+        return mapper.toListDTO(filmDAO.getPopularFilmsByGenreIdForYear(Integer.valueOf(count), genreId, year));
+    }
+
+    @Override
     public List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy) {
         boolean isExistDirector = directorDAO.isExistById(directorId);
         if (!isExistDirector) {
