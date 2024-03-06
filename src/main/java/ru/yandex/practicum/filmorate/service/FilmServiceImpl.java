@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.storage.DirectorDAO;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
@@ -16,14 +17,17 @@ import java.util.List;
 public class FilmServiceImpl implements FilmService {
     private final FilmDAO filmDAO;
     private final UserDAO userDAO;
+    private final DirectorDAO directorDAO;
     private final FilmMapper mapper;
 
     @Autowired
     public FilmServiceImpl(@Qualifier(value = "filmDB") FilmDAO filmDAO,
                            @Qualifier(value = "userDB") UserDAO userDAO,
+                           DirectorDAO directorDAO,
                            FilmMapper mapper) {
         this.filmDAO = filmDAO;
         this.userDAO = userDAO;
+        this.directorDAO = directorDAO;
         this.mapper = mapper;
     }
 
@@ -58,6 +62,15 @@ public class FilmServiceImpl implements FilmService {
     @Override
     public List<FilmDTO> getPopularFilms(String count) {
         return mapper.toListDTO(filmDAO.getPopularFilm(Integer.valueOf(count)));
+    }
+
+    @Override
+    public List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy) {
+        boolean isExistDirector = directorDAO.isExistById(directorId);
+        if (!isExistDirector) {
+            throw new NotFoundException("Director not found by ID: " + directorId, HttpStatus.NOT_FOUND);
+        }
+        return mapper.toListDTO(filmDAO.findAllFilmsByDirectorId(directorId, sortBy));
     }
 
     @Override
