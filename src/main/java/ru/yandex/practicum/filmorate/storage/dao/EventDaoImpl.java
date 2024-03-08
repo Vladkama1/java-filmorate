@@ -24,7 +24,7 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public List<Event> getFriendsFeed(Long userId) {
-        String sql= "SELECT * FROM events e " +
+        String sql = "SELECT * FROM events e " +
                 "WHERE e.user_id IN " +
                 "(SELECT u.id " +
                 "FROM users u " +
