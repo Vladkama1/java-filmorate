@@ -60,8 +60,8 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmDTO> getPopularFilms(String count, Integer genreId, Integer year) {
-        return mapper.toListDTO(filmDAO.getPopularFilm(Integer.valueOf(count), genreId, year));
+    public List<FilmDTO> getPopularFilms(Integer count, Integer genreId, Integer year) {
+        return mapper.toListDTO(filmDAO.getPopularFilm(count, genreId, year));
     }
 
     @Override
