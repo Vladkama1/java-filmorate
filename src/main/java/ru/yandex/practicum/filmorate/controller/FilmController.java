@@ -26,22 +26,26 @@ public class FilmController {
 
     @GetMapping("/{id}")
     public FilmDTO getFilmById(@PathVariable Long id) {
-        log.info("Получаем один фильм по id : {}", id);
-        return service.findById(id);
+        log.info("Запрос GET, на получение фильма по id {}.", id);
+        FilmDTO film = service.findById(id);
+        log.info("Получаем фильм по id: {}.", id);
+        return film;
     }
 
     @GetMapping
     public List<FilmDTO> getAllFilms() {
-        log.info("Получен запрос GET, на получения всех фильмов.");
+        log.info("Запрос GET, на получения всех фильмов.");
         List<FilmDTO> filmList = service.getAllFilm();
-        log.info("Получен список всех фильмов: {}", filmList.size());
+        log.info("Получен список всех фильмов размером: {}.", filmList.size());
         return filmList;
     }
 
     @GetMapping("/popular")
-    public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) String count) {
-        log.info("Получен запрос GET, на получение топ {} фильмов.", count);
-        List<FilmDTO> filmList = service.getPopularFilms(count);
+    public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) Integer count,
+                                         @RequestParam(required = false) Integer genreId,
+                                         @RequestParam(required = false) Integer year) {
+        log.info("Запрос GET, на получение топ {} фильмов по id: {} жанра за {} год.", count, genreId, year);
+        List<FilmDTO> filmList = service.getPopularFilms(count, genreId, year);
         log.info("Получен топ {} фильмов: {}", count, filmList.size());
         return filmList;
     }
@@ -58,7 +62,7 @@ public class FilmController {
     @Validated({MarkerOfCreate.class})
     @ResponseStatus(HttpStatus.CREATED)
     public FilmDTO createFilm(@Valid @RequestBody FilmDTO filmDTO) {
-        log.info("Получен запрос Post, по фильму: {}", filmDTO);
+        log.info("Запрос Post, по фильму: {}", filmDTO);
         FilmDTO film = service.saveFilm(filmDTO);
         log.info("Добавлен фильм: {}", film);
         return film;
@@ -67,7 +71,7 @@ public class FilmController {
     @PutMapping
     @Validated({MarkerOfUpdate.class})
     public FilmDTO updateFilm(@Valid @RequestBody FilmDTO filmDTO) {
-        log.info("Получен запрос Post, на обновления данных по фильму: {}", filmDTO);
+        log.info("Запрос Post, на обновления данных по фильму: {}", filmDTO);
         FilmDTO filmDTO1 = service.updateFilm(filmDTO);
         log.info("Добавлен или обновлен фильм: {}", filmDTO1);
         return filmDTO1;
@@ -75,21 +79,21 @@ public class FilmController {
 
     @PutMapping("/{id}/like/{userId}")
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
-        log.info("Получен запрос PUT, на добавления лайков, по id: {}", userId);
+        log.info("Запрос PUT, на добавления лайков, по id: {}", userId);
         service.addLike(id, userId);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
-        log.info("Получен запрос DELETE, на удаления фильма, по id: {}", id);
+        log.info("Запрос DELETE, на удаления фильма, по id: {}", id);
         service.delete(id);
     }
 
     @DeleteMapping("/{id}/like/{userId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
-        log.info("Получен запрос DELETE, на удаление лайков, по id: {}", id);
+        log.info("Запрос DELETE, на удаление лайков, по id: {}", id);
         service.deleteLike(id, userId);
     }
 }

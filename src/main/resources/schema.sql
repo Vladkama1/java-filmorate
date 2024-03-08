@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS films_genres
 
 CREATE TABLE IF NOT EXISTS films_directors
 (
-    film_id  int references films (id) ON DELETE CASCADE,
+    film_id     int references films (id) ON DELETE CASCADE,
     director_id int references directors (id) ON DELETE CASCADE,
     primary key (director_id, film_id)
 );
