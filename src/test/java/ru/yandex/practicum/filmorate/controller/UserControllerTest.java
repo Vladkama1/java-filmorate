@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 class UserControllerTest {
     private UserMapper mapper = new UserMapperImpl();
     private UserDAO userDAO = new InMemoryUserStorage();
-    private UserService userService = new UserServiceImpl(userDAO, mapper);
+    private UserService userService = new UserServiceImpl(userDAO, null,mapper);
     private UserController userController;
 
     UserDTO user = UserDTO.builder()

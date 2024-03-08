@@ -7,7 +7,11 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.enums.EventType;
+import ru.yandex.practicum.filmorate.model.enums.Operation;
 import ru.yandex.practicum.filmorate.storage.DirectorDAO;
+import ru.yandex.practicum.filmorate.storage.EventDao;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
@@ -18,16 +22,20 @@ public class FilmServiceImpl implements FilmService {
     private final FilmDAO filmDAO;
     private final UserDAO userDAO;
     private final DirectorDAO directorDAO;
+
+    private final EventDao eventDao;
     private final FilmMapper mapper;
 
     @Autowired
     public FilmServiceImpl(@Qualifier(value = "filmDB") FilmDAO filmDAO,
                            @Qualifier(value = "userDB") UserDAO userDAO,
                            DirectorDAO directorDAO,
+                           EventDao eventDao,
                            FilmMapper mapper) {
         this.filmDAO = filmDAO;
         this.userDAO = userDAO;
         this.directorDAO = directorDAO;
+        this.eventDao = eventDao;
         this.mapper = mapper;
     }
 
@@ -57,6 +65,12 @@ public class FilmServiceImpl implements FilmService {
     public void addLike(Long filmId, Long userId) {
         existIds(filmId, userId);
         filmDAO.addLike(filmId, userId);
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.LIKE)
+                .operation(Operation.ADD)
+                .userId(userId)
+                .entityId(filmId).build());
     }
 
     @Override
@@ -77,6 +91,12 @@ public class FilmServiceImpl implements FilmService {
     public void deleteLike(Long id, Long userId) {
         existIds(id, userId);
         filmDAO.deleteLike(id, userId);
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.LIKE)
+                .operation(Operation.REMOVE)
+                .userId(userId)
+                .entityId(id).build());
     }
 
     @Override
