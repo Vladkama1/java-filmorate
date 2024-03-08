@@ -39,7 +39,7 @@ public class Event {
                 .build();
     }
 
-    public Event (EventDto eventDto) {
+    public Event(EventDto eventDto) {
         this.userId = eventDto.getUserId();
         this.eventType = eventDto.getEventType();
         this.operation = eventDto.getOperation();
