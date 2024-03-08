@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfCreate;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfUpdate;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -25,6 +26,14 @@ public class UserController {
     public UserDTO findById(@PathVariable Long id) {
         log.info("Получен запрос GET, на получения пользователя, по id: {}", id);
         return service.findById(id);
+    }
+
+    @GetMapping("/{userId}/recommendations")
+    public List<FilmDTO> getRecommendations(@PathVariable Long userId) {
+        log.info("Получен запрос GET, по рекомендации фильмов, по userId: {}", userId);
+        List<FilmDTO> filmDTOList = service.getRecommendations(userId);
+        log.info("Получен ответ, список рекомендаций по фильмам, размер: {}", filmDTOList.size());
+        return filmDTOList;
     }
 
     @GetMapping

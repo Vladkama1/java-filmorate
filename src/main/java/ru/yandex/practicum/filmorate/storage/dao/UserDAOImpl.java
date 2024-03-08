@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
 public class UserDAOImpl implements UserDAO {
     private final JdbcTemplate jdbcTemplate;
 
+
     @Override
     public User save(User user) {
         String sqlQuery = "INSERT INTO users(name, email, login, birthday) VALUES ( ?, ?, ?, ? )";

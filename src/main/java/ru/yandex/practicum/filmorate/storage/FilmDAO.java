@@ -12,6 +12,8 @@ public interface FilmDAO {
      */
     Optional<Film> findById(Long id);
 
+    List<Film> getRecommendations(Long userId);
+
     List<Film> findAll();
 
     Film save(Film film);

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 
 import java.util.List;
@@ -8,6 +9,8 @@ public interface UserService {
     UserDTO findById(Long id);
 
     List<UserDTO> getAllUsers();
+
+    List<FilmDTO> getRecommendations(Long userId);
 
     List<UserDTO> getAllFriends(Long id);
 
