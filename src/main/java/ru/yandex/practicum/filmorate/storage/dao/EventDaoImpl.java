@@ -37,7 +37,7 @@ public class EventDaoImpl implements EventDao {
                 "FROM friendships AS f   " +
                 "WHERE f.user2_id=:userId " +
                 "AND f.status = TRUE))";
-        SqlParameterSource parameterSource = new MapSqlParameterSource("user_id", userId);
+        SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         return jdbcTemplate.query(sql, parameterSource, (rs, rowNum) -> mapRow(rs, rowNum));
     }
 
@@ -50,13 +50,13 @@ public class EventDaoImpl implements EventDao {
 
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("user_id", event.getUserId())
-                .addValue("event_type_id", event.getEventType().name())
+                .addValue("event_type", event.getEventType().name())
                 .addValue("entity_id", event.getEntityId())
-                .addValue("operation_id", event.getOperation().name());
+                .addValue("operation", event.getOperation().name());
 
         jdbcTemplate.update(sql, parameterSource, keyHolder);
 
-        final Long id = keyHolder.getKeyAs(Long.class);
+        final Long id = (Long) keyHolder.getKeyList().get(0).get("id");
 
         event.setId(id);
 
