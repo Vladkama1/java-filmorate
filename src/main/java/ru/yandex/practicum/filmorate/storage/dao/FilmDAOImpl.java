@@ -102,6 +102,37 @@ public class FilmDAOImpl implements FilmDAO {
     }
 
     @Override
+    public List<Film> getRecommendations(Long userId) {
+        String sqlQuery = "SELECT f.*," +
+                "       m.name               AS mpa_name," +
+                "       GROUP_CONCAT(g.id)   AS genre_id," +
+                "       GROUP_CONCAT(g.name) AS genre_name, " +
+                "       GROUP_CONCAT(d.id)   AS director_id," +
+                "       GROUP_CONCAT(d.name) AS director_name " +
+                "FROM films AS f" +
+                "         LEFT JOIN mpa AS m ON m.id = f.mpa_id" +
+                "         LEFT JOIN films_genres AS fg ON f.id = fg.film_id" +
+                "         LEFT JOIN genres AS g ON g.id = fg.genre_id " +
+                "         LEFT JOIN films_directors AS fd ON f.id = fd.film_id" +
+                "         LEFT JOIN directors AS d ON d.id = fd.director_id " +
+                "WHERE f.id IN (SELECT film_id FROM films_users " +
+                "WHERE user_id IN (SELECT user_id " +
+                "    FROM (SELECT user_id,COUNT(user_id) AS crossing " +
+                "    FROM (SELECT user_id FROM films_users " +
+                "WHERE film_id IN(SELECT film_id FROM films_users WHERE user_id = ?) AND user_id != ?) " +
+                "GROUP BY user_id) " +
+                "WHERE crossing = (SELECT MAX(crossing) FROM " +
+                "    (SELECT user_id,COUNT(user_id) AS crossing " +
+                "     FROM (SELECT user_id FROM films_users " +
+                "           WHERE film_id IN(SELECT film_id FROM films_users WHERE user_id = ?) " +
+                "             AND user_id != ?) " +
+                "     GROUP BY user_id))) AND film_id NOT IN (SELECT film_id FROM films_users WHERE user_id = ?) " +
+                "    GROUP BY film_id)" +
+                "    GROUP BY f.id";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilms, userId, userId, userId, userId, userId);
+    }
+
+    @Override
     public boolean addLike(Long filmId, Long userId) {
         String sqlQuery = "INSERT INTO films_users (user_id, film_id)" +
                 "VALUES ( ?,? ) ";

@@ -17,6 +17,11 @@ public class InMemoryFilmStorage implements FilmDAO {
     }
 
     @Override
+    public List<Film> getRecommendations(Long userId) {
+        return null;
+    }
+
+    @Override
     public List<Film> findAll() {
         return new ArrayList<>(films.values());
     }

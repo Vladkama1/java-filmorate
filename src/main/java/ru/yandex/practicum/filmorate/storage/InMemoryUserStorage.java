@@ -11,7 +11,6 @@ public class InMemoryUserStorage implements UserDAO {
     private Long id = 1L;
     private final Map<Long, User> users = new HashMap<>();
 
-
     @Override
     public User save(User user) {
         user.setId(createIdUser());
