@@ -99,6 +99,10 @@ public class FilmServiceImpl implements FilmService {
         return mapper.toListDTO(filmDAO.searchFilms(query, by));
     }
 
+    @Override
+    public List<FilmDTO> getAllMutualFilms(Long userId, Long friendId) {
+        return mapper.toListDTO(filmDAO.getAllMutualFilms(userId, friendId));
+    }
 
     private void existIds(Long filmId, Long userId) {
         String filmNotFound = "Film not found by ID: ";

@@ -91,7 +91,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         log.info("Запрос DELETE, на удаление лайков, по id: {}", id);
         service.deleteLike(id, userId);
@@ -105,4 +105,12 @@ public class FilmController {
         return filmList;
     }
 
+    @GetMapping("/common")
+    public List<FilmDTO> getAllMutualFilms(@RequestParam Long userId,
+                                           @RequestParam Long friendId) {
+        log.info("Получен запрос GET, на получение общих фильмов.");
+        List<FilmDTO> filmDTOList = service.getAllMutualFilms(userId, friendId);
+        log.info("Получен список общих фильмов: {}", filmDTOList.size());
+        return filmDTOList;
+    }
 }

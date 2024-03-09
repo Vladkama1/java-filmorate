@@ -77,6 +77,11 @@ public class InMemoryFilmStorage implements FilmDAO {
     }
 
     @Override
+    public List<Film> getAllMutualFilms(Long userId, Long friendId) {
+        return null;
+    }
+
+    @Override
     public boolean addLike(Long filmId, Long userId) {
         return films.get(filmId).getLikes().add(userId);
     }
