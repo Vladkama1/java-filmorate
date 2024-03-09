@@ -17,6 +17,7 @@ public interface ReviewDAO {
     boolean addRate(Long userId, Long reviewId, Boolean rate);
 
     boolean deleteRate(Long userId, Long reviewId);
+    
     List<Review> getPopularReview(Integer count);
 
     List<Review> getPopularReviewByFilm(Long filmId, Integer count);
