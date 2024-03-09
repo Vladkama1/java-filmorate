@@ -72,7 +72,7 @@ public class ReviewDAOImpl implements ReviewDAO {
                 review.getReviewId()
         );
         if (update == 0) {
-            throw new NotFoundException("Отзыв не найден!", HttpStatus.NOT_FOUND);
+            return Optional.empty();
         }
         return findById(review.getReviewId());
     }

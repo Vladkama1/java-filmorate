@@ -79,13 +79,10 @@ public class ReviewServiceImpl implements ReviewService {
     }
 
     @Override
-    public List<ReviewDTO> getPopularReview(Integer count) {
-        return mapper.toListDTO(reviewDAO.getPopularReview(count));
-    }
-
-    @Override
-    public List<ReviewDTO> getPopularReviewByFilm(Long filmId, Integer count) {
-        existFilm(filmId);
+    public List<ReviewDTO> getPopularReview(Integer count, Long filmId) {
+        if (filmId == null) {
+            return mapper.toListDTO(reviewDAO.getPopularReview(count));
+        }
         return mapper.toListDTO(reviewDAO.getPopularReviewByFilm(filmId, count));
     }
 

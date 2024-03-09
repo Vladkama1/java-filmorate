@@ -17,7 +17,5 @@ public interface ReviewService {
 
     void deleteRate(Long userId, Long reviewId);
 
-    List<ReviewDTO> getPopularReview(Integer count);
-
-    List<ReviewDTO> getPopularReviewByFilm(Long filmId, Integer count);
+    List<ReviewDTO> getPopularReview(Integer count, Long filmId);
 }

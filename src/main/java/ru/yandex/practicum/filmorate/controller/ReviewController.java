@@ -90,15 +90,9 @@ public class ReviewController {
                                       @RequestParam(required = false)
                                       Long filmId
     ) {
-        if (filmId != null) {
-            log.info("Получен запрос GET, на получение топ {} отзывов по фильму {}.", count, filmId);
-            List<ReviewDTO> reviewList = service.getPopularReviewByFilm(filmId, count);
-            log.info("Получен топ {} отзывов по фильму: {}", count, reviewList.size());
-            return reviewList;
-        }
-        log.info("Получен запрос GET, на получение топ {} отзывов по всем фильмам.", count);
-        List<ReviewDTO> reviewList = service.getPopularReview(count);
-        log.info("Получен топ {} отзывов по фильмам: {}", count, reviewList.size());
+        log.info("Получен запрос GET, на получение топ {} отзывов.", count);
+        List<ReviewDTO> reviewList = service.getPopularReview(count, filmId);
+        log.info("Получен топ {} отзывов: {}", count, reviewList.size());
         return reviewList;
     }
 }
