@@ -24,19 +24,22 @@ public class EventDaoImpl implements EventDao {
 
     @Override
     public List<Event> getFriendsFeed(Long userId) {
+//        String sql = "SELECT * FROM events e " +
+//                "WHERE e.user_id IN " +
+//                "(SELECT u.id " +
+//                "FROM users u " +
+//                "WHERE u.id IN " +
+//                "(SELECT f.user2_id " +
+//                "FROM friendships AS f " +
+//                "WHERE f.user1_id=:userId " +
+//                "UNION " +
+//                "SELECT f.user1_id " +
+//                "FROM friendships AS f   " +
+//                "WHERE f.user2_id=:userId " +
+//                "AND f.status = TRUE))";
+
         String sql = "SELECT * FROM events e " +
-                "WHERE e.user_id IN " +
-                "(SELECT u.id " +
-                "FROM users u " +
-                "WHERE u.id IN " +
-                "(SELECT f.user2_id " +
-                "FROM friendships AS f " +
-                "WHERE f.user1_id=:userId " +
-                "UNION " +
-                "SELECT f.user1_id " +
-                "FROM friendships AS f   " +
-                "WHERE f.user2_id=:userId " +
-                "AND f.status = TRUE))";
+                "WHERE e.user_id = :userId ";
         SqlParameterSource parameterSource = new MapSqlParameterSource("userId", userId);
         return jdbcTemplate.query(sql, parameterSource, (rs, rowNum) -> mapRow(rs, rowNum));
     }
