@@ -46,7 +46,7 @@ public class FilmController {
                                          @RequestParam(required = false) Integer year) {
         log.info("Запрос GET, на получение топ {} фильмов по id: {} жанра за {} год.", count, genreId, year);
         List<FilmDTO> filmList = service.getPopularFilms(count, genreId, year);
-        log.info("Получен топ {} фильмов: {}", count, filmList.size());
+        log.info("Получен топ {} фильмов: {}.", count, filmList.size());
         return filmList;
     }
 
