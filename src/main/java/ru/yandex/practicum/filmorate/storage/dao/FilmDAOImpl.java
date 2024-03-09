@@ -134,7 +134,7 @@ public class FilmDAOImpl implements FilmDAO {
     }
 
     @Override
-    public List<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
+    public List<Film> getPopularFilm(Integer count, Long genreId, Integer year) {
         String sqlQuery = "SELECT f.*," +
                 "       m.name               AS mpa_name," +
                 "       GROUP_CONCAT(g.id)   AS genre_id," +

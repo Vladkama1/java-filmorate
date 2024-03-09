@@ -9,4 +9,6 @@ public interface GenreDAO {
     Optional<Genre> findById(Long id);
 
     List<Genre> findAll();
+
+    boolean isExistById(Long id);
 }

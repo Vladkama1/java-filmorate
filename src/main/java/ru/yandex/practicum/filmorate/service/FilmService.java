@@ -9,7 +9,7 @@ public interface FilmService {
 
     List<FilmDTO> getAllFilm();
 
-    List<FilmDTO> getPopularFilms(Integer count, Integer genreId, Integer year);
+    List<FilmDTO> getPopularFilms(Integer count, Long genreId, Integer year);
 
     List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy);
 
