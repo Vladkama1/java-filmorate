@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -7,12 +8,15 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.DirectorDAO;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
     private final FilmDAO filmDAO;
@@ -86,6 +90,23 @@ public class FilmServiceImpl implements FilmService {
             throw new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public List<FilmDTO> searchFilms(String query, String by) {
+        if (!(by.contains("title") || by.contains("director") || by.contains("title,director") || by.contains("director,title") || by.contains("unknown"))) {
+            log.info("Некорректное значение выборки поиска в поле BY = {}", by);
+            throw new IllegalArgumentException("Некорректное значение выборки поиска");
+        }
+
+        List<Film> films = filmDAO.searchFilms(query, by);
+
+        List<FilmDTO> filmDTOs = films.stream()
+                .map(film -> mapper.toDTO(film))
+                .collect(Collectors.toList());
+
+        return filmDTOs;
+    }
+
 
     private void existIds(Long filmId, Long userId) {
         String filmNotFound = "Film not found by ID: ";

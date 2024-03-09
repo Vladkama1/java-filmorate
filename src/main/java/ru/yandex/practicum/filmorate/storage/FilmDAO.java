@@ -29,4 +29,6 @@ public interface FilmDAO {
     List<Film> getPopularFilm(Integer count);
 
     List<Film> findAllFilmsByDirectorId(Long directorId, String sortBy);
+
+    List<Film> searchFilms(String query, String by);
 }
