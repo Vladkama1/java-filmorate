@@ -22,4 +22,6 @@ public interface FilmService {
     void delete(Long id);
 
     void addLike(Long filmId, Long userId);
+
+    List<FilmDTO> searchFilms(String query, String by);
 }

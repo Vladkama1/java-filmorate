@@ -96,4 +96,13 @@ public class FilmController {
         log.info("Запрос DELETE, на удаление лайков, по id: {}", id);
         service.deleteLike(id, userId);
     }
+
+    @GetMapping("/search")
+    public List<FilmDTO> searchFilms(@RequestParam String query, @RequestParam String by) {
+        log.info("Запрос GET, на поиск фильмов по запросу: {} по полю: {}", query, by);
+        List<FilmDTO> filmList = service.searchFilms(query, by);
+        log.info("Получен список из {} фильмов по запросу: {} по полю: {}", filmList.size(), query, by);
+        return filmList;
+    }
+
 }

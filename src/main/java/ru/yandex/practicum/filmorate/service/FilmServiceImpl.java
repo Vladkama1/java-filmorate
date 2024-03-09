@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
 
+@Slf4j
 @Service
 public class FilmServiceImpl implements FilmService {
     private final FilmDAO filmDAO;
@@ -86,6 +88,17 @@ public class FilmServiceImpl implements FilmService {
             throw new NotFoundException("Фильм не найден", HttpStatus.NOT_FOUND);
         }
     }
+
+    @Override
+    public List<FilmDTO> searchFilms(String query, String by) {
+        if (!(by.contains("title") || by.contains("director") || by.contains("title,director") || by.contains("director,title") || by.contains("unknown"))) {
+            log.info("Некорректное значение выборки поиска в поле BY = {}", by);
+            throw new IllegalArgumentException("Некорректное значение выборки поиска");
+        }
+
+        return mapper.toListDTO(filmDAO.searchFilms(query, by));
+    }
+
 
     private void existIds(Long filmId, Long userId) {
         String filmNotFound = "Film not found by ID: ";
