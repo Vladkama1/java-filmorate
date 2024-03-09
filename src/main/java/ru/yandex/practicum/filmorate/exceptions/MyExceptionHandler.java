@@ -35,4 +35,10 @@ public class MyExceptionHandler {
         log.error("Exception ConstraintViolationException: {}, статус ответа: {}", e.getMessage(), HttpStatus.BAD_REQUEST);
         return new ResponseEntity<>(new Error("Ошибка: " + e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler
+    public ResponseEntity<Error> handleAlreadyExistsException(final AlreadyExistsException e) {
+        log.error("Exception AlreadyExistsException: {}, статус ответа: {}", e.getMessage(), HttpStatus.CONFLICT);
+        return new ResponseEntity<>(new Error("Ошибка: " + e.getMessage()), HttpStatus.CONFLICT);
+    }
 }
