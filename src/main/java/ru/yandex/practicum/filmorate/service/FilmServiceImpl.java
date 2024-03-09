@@ -98,13 +98,7 @@ public class FilmServiceImpl implements FilmService {
             throw new IllegalArgumentException("Некорректное значение выборки поиска");
         }
 
-        List<Film> films = filmDAO.searchFilms(query, by);
-
-        List<FilmDTO> filmDTOs = films.stream()
-                .map(film -> mapper.toDTO(film))
-                .collect(Collectors.toList());
-
-        return filmDTOs;
+        return mapper.toListDTO(filmDAO.searchFilms(query, by));
     }
 
 
