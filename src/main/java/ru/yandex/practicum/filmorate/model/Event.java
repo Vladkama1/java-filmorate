@@ -8,7 +8,7 @@ import ru.yandex.practicum.filmorate.dto.EventDto;
 import ru.yandex.practicum.filmorate.model.enums.EventType;
 import ru.yandex.practicum.filmorate.model.enums.Operation;
 
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Data
 @Builder
@@ -26,7 +26,7 @@ public class Event {
 
     private Long entityId;
 
-    private LocalDateTime timestamp;
+    private Instant timestamp;
 
     public EventDto toDto() {
         return EventDto.builder()
@@ -35,7 +35,7 @@ public class Event {
                 .eventType(this.eventType)
                 .operation(this.operation)
                 .entityId(this.entityId)
-                .timestamp(timestamp.getNano())
+                .timestamp(timestamp.toEpochMilli())
                 .build();
     }
 

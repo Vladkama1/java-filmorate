@@ -70,7 +70,7 @@ public class EventDaoImpl implements EventDao {
                 .eventType(EventType.valueOf(rs.getString("event_type")))
                 .operation(Operation.valueOf(rs.getString("operation")))
                 .entityId(rs.getLong("entity_id"))
-                .timestamp(rs.getTimestamp("timestamp").toLocalDateTime())
+                .timestamp(rs.getTimestamp("timestamp").toInstant())
                 .build();
     }
 }

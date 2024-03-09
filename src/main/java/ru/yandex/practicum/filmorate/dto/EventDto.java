@@ -19,5 +19,5 @@ public class EventDto {
 
     private Long entityId;
 
-    private Integer timestamp;
+    private Long timestamp;
 }
