@@ -55,7 +55,8 @@ public class ReviewServiceImpl implements ReviewService {
                 .eventType(EventType.REVIEW)
                 .operation(Operation.ADD)
                 .userId(reviewDTO.getUserId())
-                .entityId(response.getReviewId()).build());
+                .entityId(response.getReviewId())
+                .build());
         return response;
     }
 
@@ -69,17 +70,24 @@ public class ReviewServiceImpl implements ReviewService {
         eventDao.save(Event.builder()
                 .eventType(EventType.REVIEW)
                 .operation(Operation.UPDATE)
-                .userId(reviewDTO.getUserId())
-                .entityId(response.getReviewId()).build());
+                .userId(response.getUserId())
+                .entityId(response.getReviewId())
+                .build());
         return response;
     }
 
     @Override
     public void delete(Long id) {
-        boolean deleted = reviewDAO.delete(id);
-        if (!deleted) {
-            throw new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND);
-        }
+        ReviewDTO reviewDTO = mapper.toDTO(reviewDAO.findById(id)
+                .orElseThrow(() -> new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND)));
+        reviewDAO.delete(id);
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.REVIEW)
+                .operation(Operation.REMOVE)
+                .userId(reviewDTO.getUserId())
+                .entityId(id)
+                .build());
     }
 
     @Override
