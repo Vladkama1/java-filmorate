@@ -10,6 +10,7 @@ import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidException;
+import ru.yandex.practicum.filmorate.mapper.EventMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
 import ru.yandex.practicum.filmorate.model.Event;
@@ -29,16 +30,19 @@ public class UserServiceImpl implements UserService {
     private final FilmDAO filmDAO;
     private final UserMapper userMapper;
     private final FilmMapper filmMapper;
+    private final EventMapper eventMapper;
 
     private final EventDao eventDao;
 
     @Autowired
-    public UserServiceImpl(@Qualifier(value = "userDB") UserDAO storage, @Qualifier(value = "filmDB") FilmDAO filmDAO, EventDao eventDao, UserMapper mapper, FilmMapper filmMapper) {
+    public UserServiceImpl(@Qualifier(value = "userDB") UserDAO storage, @Qualifier(value = "filmDB") FilmDAO filmDAO,
+                           EventDao eventDao, UserMapper mapper, FilmMapper filmMapper, EventMapper eventMapper) {
         this.userDAO = storage;
         this.filmDAO = filmDAO;
         this.eventDao = eventDao;
         this.userMapper = mapper;
         this.filmMapper = filmMapper;
+        this.eventMapper = eventMapper;
     }
 
     @Override
@@ -119,13 +123,14 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND)));
     }
 
+    @Override
     public List<EventDto> getFeed(Long id) {
         boolean existById = userDAO.isExistById(id);
         if (!existById) {
             throw new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND);
         }
 
-        return eventDao.getFriendsFeed(id).stream().map(Event::toDto).collect(Collectors.toList());
+        return eventMapper.toListDTO(eventDao.getFriendsFeed(id));
     }
 
     private void existUser(Long id, Long otherId) {
