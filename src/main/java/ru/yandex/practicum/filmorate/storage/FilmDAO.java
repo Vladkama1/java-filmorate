@@ -30,4 +30,6 @@ public interface FilmDAO {
     List<Film> findAllFilmsByDirectorId(Long directorId, String sortBy);
 
     List<Film> searchFilms(String query, String by);
+
+    List<Film> getAllMutualFilms(Long userId, Long friendId);
 }

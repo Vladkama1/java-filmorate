@@ -24,4 +24,6 @@ public interface FilmService {
     void addLike(Long filmId, Long userId);
 
     List<FilmDTO> searchFilms(String query, String by);
+
+    List<FilmDTO> getAllMutualFilms(Long userId, Long friendId);
 }
