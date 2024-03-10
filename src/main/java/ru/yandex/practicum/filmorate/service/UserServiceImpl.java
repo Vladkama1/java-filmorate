@@ -21,7 +21,6 @@ import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
