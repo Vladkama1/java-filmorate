@@ -7,6 +7,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfCreate;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfUpdate;
+import ru.yandex.practicum.filmorate.dto.EventDto;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.service.UserService;
@@ -96,5 +97,13 @@ public class UserController {
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.info("Получен запрос DELETE, удаление из друзей по id: {}", id);
         service.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<EventDto> getFeed(@PathVariable Long id) {
+        log.info("Получен запрос GET, на получение ленты событий.");
+        List<EventDto> eventDTOList = service.getFeed(id);
+        log.info("Получен список событий: {}",eventDTOList);
+        return eventDTOList;
     }
 }

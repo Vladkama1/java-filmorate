@@ -8,6 +8,10 @@ import ru.yandex.practicum.filmorate.dto.ReviewDTO;
 import ru.yandex.practicum.filmorate.exceptions.AlreadyExistsException;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.mapper.ReviewMapper;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.enums.EventType;
+import ru.yandex.practicum.filmorate.model.enums.Operation;
+import ru.yandex.practicum.filmorate.storage.EventDao;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.ReviewDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
@@ -19,14 +23,17 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewDAO reviewDAO;
     private final FilmDAO filmDAO;
     private final UserDAO userDAO;
+    private final EventDao eventDao;
     private final ReviewMapper mapper;
 
     @Autowired
     ReviewServiceImpl(@Qualifier(value = "reviewDB") ReviewDAO reviewDAO,
                       @Qualifier(value = "filmDB") FilmDAO filmDAO,
                       @Qualifier(value = "userDB") UserDAO userDAO,
+                      EventDao eventDao,
                       ReviewMapper mapper) {
         this.reviewDAO = reviewDAO;
+        this.eventDao = eventDao;
         this.mapper = mapper;
         this.filmDAO = filmDAO;
         this.userDAO = userDAO;
@@ -42,23 +49,45 @@ public class ReviewServiceImpl implements ReviewService {
     public ReviewDTO saveReview(ReviewDTO reviewDTO) {
         existUser(reviewDTO.getUserId());
         existFilm(reviewDTO.getFilmId());
-        return mapper.toDTO(reviewDAO.save(mapper.toModel(reviewDTO)));
+        ReviewDTO response = mapper.toDTO(reviewDAO.save(mapper.toModel(reviewDTO)));
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.REVIEW)
+                .operation(Operation.ADD)
+                .userId(reviewDTO.getUserId())
+                .entityId(response.getReviewId())
+                .build());
+        return response;
     }
 
     @Override
     public ReviewDTO updateReview(ReviewDTO reviewDTO) {
         existUser(reviewDTO.getUserId());
         existFilm(reviewDTO.getFilmId());
-        return mapper.toDTO(reviewDAO.update(mapper.toModel(reviewDTO))
+        ReviewDTO response = mapper.toDTO(reviewDAO.update(mapper.toModel(reviewDTO))
                 .orElseThrow(() -> new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND)));
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.REVIEW)
+                .operation(Operation.UPDATE)
+                .userId(response.getUserId())
+                .entityId(response.getReviewId())
+                .build());
+        return response;
     }
 
     @Override
     public void delete(Long id) {
-        boolean deleted = reviewDAO.delete(id);
-        if (!deleted) {
-            throw new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND);
-        }
+        ReviewDTO reviewDTO = mapper.toDTO(reviewDAO.findById(id)
+                .orElseThrow(() -> new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND)));
+        reviewDAO.delete(id);
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.REVIEW)
+                .operation(Operation.REMOVE)
+                .userId(reviewDTO.getUserId())
+                .entityId(id)
+                .build());
     }
 
     @Override

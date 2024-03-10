@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ru.yandex.practicum.filmorate.dto.EventDto;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 
@@ -25,4 +26,6 @@ public interface UserService {
     void delete(Long id);
 
     UserDTO updateUser(UserDTO userDTO);
+
+    List<EventDto> getFeed(Long id);
 }

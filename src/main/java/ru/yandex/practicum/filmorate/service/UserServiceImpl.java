@@ -5,12 +5,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.EventDto;
 import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.exceptions.ValidException;
+import ru.yandex.practicum.filmorate.mapper.EventMapper;
 import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.mapper.UserMapper;
+import ru.yandex.practicum.filmorate.model.Event;
+import ru.yandex.practicum.filmorate.model.enums.EventType;
+import ru.yandex.practicum.filmorate.model.enums.Operation;
+import ru.yandex.practicum.filmorate.storage.EventDao;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
@@ -23,13 +29,19 @@ public class UserServiceImpl implements UserService {
     private final FilmDAO filmDAO;
     private final UserMapper userMapper;
     private final FilmMapper filmMapper;
+    private final EventMapper eventMapper;
+
+    private final EventDao eventDao;
 
     @Autowired
-    public UserServiceImpl(@Qualifier(value = "userDB") UserDAO storage, @Qualifier(value = "filmDB") FilmDAO filmDAO, UserMapper mapper, FilmMapper filmMapper) {
+    public UserServiceImpl(@Qualifier(value = "userDB") UserDAO storage, @Qualifier(value = "filmDB") FilmDAO filmDAO,
+                           EventDao eventDao, UserMapper mapper, FilmMapper filmMapper, EventMapper eventMapper) {
         this.userDAO = storage;
         this.filmDAO = filmDAO;
+        this.eventDao = eventDao;
         this.userMapper = mapper;
         this.filmMapper = filmMapper;
+        this.eventMapper = eventMapper;
     }
 
     @Override
@@ -75,12 +87,24 @@ public class UserServiceImpl implements UserService {
         if (!addedFriend) {
             throw new ValidException("Дружба уже существует!", HttpStatus.BAD_REQUEST);
         }
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.FRIEND)
+                .operation(Operation.ADD)
+                .userId(id)
+                .entityId(friendId).build());
     }
 
     @Override
     public void deleteFriend(Long id, Long friendId) {
         existUser(id, friendId);
         userDAO.deleteFriend(id, friendId);
+        // Запись в лог действий
+        eventDao.save(Event.builder()
+                .eventType(EventType.FRIEND)
+                .operation(Operation.REMOVE)
+                .userId(id)
+                .entityId(friendId).build());
     }
 
     @Override
@@ -96,6 +120,16 @@ public class UserServiceImpl implements UserService {
         validatedUserName(userDTO);
         return userMapper.toDTO(userDAO.update(userMapper.toModel(userDTO))
                 .orElseThrow(() -> new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND)));
+    }
+
+    @Override
+    public List<EventDto> getFeed(Long id) {
+        boolean existById = userDAO.isExistById(id);
+        if (!existById) {
+            throw new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND);
+        }
+
+        return eventMapper.toListDTO(eventDao.getFriendsFeed(id));
     }
 
     private void existUser(Long id, Long otherId) {
