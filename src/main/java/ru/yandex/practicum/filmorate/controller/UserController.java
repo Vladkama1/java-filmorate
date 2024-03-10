@@ -103,7 +103,7 @@ public class UserController {
     public List<EventDto> getFeed(@PathVariable Long id) {
         log.info("Получен запрос GET, на получение ленты событий.");
         List<EventDto> eventDTOList = service.getFeed(id);
-        log.info("Получен список событий: {}",eventDTOList);
+        log.info("Получен список событий: {}", eventDTOList);
         return eventDTOList;
     }
 }

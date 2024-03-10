@@ -21,5 +21,4 @@ public interface EventMapper {
     List<Event> toListModels(List<EventDto> eventDtoList);
 
     List<EventDto> toListDTO(List<Event> eventList);
-
 }

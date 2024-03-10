@@ -34,21 +34,15 @@ public class EventDaoImpl implements EventDao {
     public Event save(Event event) {
         String sql = "INSERT INTO events (user_id, event_type, entity_id, operation) " +
                 "VALUES (:user_id, :event_type, :entity_id, :operation)";
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
-
         SqlParameterSource parameterSource = new MapSqlParameterSource()
                 .addValue("user_id", event.getUserId())
                 .addValue("event_type", event.getEventType().name())
                 .addValue("entity_id", event.getEntityId())
                 .addValue("operation", event.getOperation().name());
-
         jdbcTemplate.update(sql, parameterSource, keyHolder);
-
         final Long id = (Long) keyHolder.getKeyList().get(0).get("id");
-
         event.setId(id);
-
         return event;
     }
 

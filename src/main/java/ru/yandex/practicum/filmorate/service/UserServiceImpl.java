@@ -30,7 +30,6 @@ public class UserServiceImpl implements UserService {
     private final UserMapper userMapper;
     private final FilmMapper filmMapper;
     private final EventMapper eventMapper;
-
     private final EventDao eventDao;
 
     @Autowired
@@ -87,7 +86,6 @@ public class UserServiceImpl implements UserService {
         if (!addedFriend) {
             throw new ValidException("Дружба уже существует!", HttpStatus.BAD_REQUEST);
         }
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.FRIEND)
                 .operation(Operation.ADD)
@@ -98,8 +96,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteFriend(Long id, Long friendId) {
         existUser(id, friendId);
-        userDAO.deleteFriend(id, friendId);
-        // Запись в лог действий
+        boolean deleteFriend = userDAO.deleteFriend(id, friendId);
+        if (!deleteFriend) {
+            throw new ValidException("Дружбы не существует!", HttpStatus.BAD_REQUEST);
+        }
         eventDao.save(Event.builder()
                 .eventType(EventType.FRIEND)
                 .operation(Operation.REMOVE)
@@ -128,7 +128,6 @@ public class UserServiceImpl implements UserService {
         if (!existById) {
             throw new NotFoundException("Пользователь не найден", HttpStatus.NOT_FOUND);
         }
-
         return eventMapper.toListDTO(eventDao.getFriendsFeed(id));
     }
 

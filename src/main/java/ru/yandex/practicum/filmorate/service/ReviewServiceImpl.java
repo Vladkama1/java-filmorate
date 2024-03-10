@@ -50,7 +50,6 @@ public class ReviewServiceImpl implements ReviewService {
         existUser(reviewDTO.getUserId());
         existFilm(reviewDTO.getFilmId());
         ReviewDTO response = mapper.toDTO(reviewDAO.save(mapper.toModel(reviewDTO)));
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.REVIEW)
                 .operation(Operation.ADD)
@@ -66,7 +65,6 @@ public class ReviewServiceImpl implements ReviewService {
         existFilm(reviewDTO.getFilmId());
         ReviewDTO response = mapper.toDTO(reviewDAO.update(mapper.toModel(reviewDTO))
                 .orElseThrow(() -> new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND)));
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.REVIEW)
                 .operation(Operation.UPDATE)
@@ -81,7 +79,6 @@ public class ReviewServiceImpl implements ReviewService {
         ReviewDTO reviewDTO = mapper.toDTO(reviewDAO.findById(id)
                 .orElseThrow(() -> new NotFoundException("Отзыв не найден", HttpStatus.NOT_FOUND)));
         reviewDAO.delete(id);
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.REVIEW)
                 .operation(Operation.REMOVE)

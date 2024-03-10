@@ -2,13 +2,11 @@ package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.DuplicateKeyException;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
@@ -94,7 +92,7 @@ public class FilmDAOImpl implements FilmDAO {
         int update = jdbcTemplate.update(sqlQuery, film.getName(), film.getReleaseDate(), film.getDescription(),
                 film.getDuration(), film.getMpa().getId(), film.getId());
         if (update == 0) {
-            throw new NotFoundException("Фильм не найден!", HttpStatus.NOT_FOUND);
+            return Optional.empty();
         }
         updateFilmGenresLinks(film);
         updateFilmDirectorsLinks(film);
@@ -188,7 +186,6 @@ public class FilmDAOImpl implements FilmDAO {
                 "GROUP BY f.id " +
                 "ORDER BY likes DESC " +
                 "LIMIT ?";
-
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilms, genreId, genreId, year, year, count);
     }
 
@@ -211,13 +208,11 @@ public class FilmDAOImpl implements FilmDAO {
                 "WHERE d.id = ?" +
                 "GROUP BY f.id " +
                 "ORDER BY ";
-
         if (sortBy.equals("likes")) {
             sqlQuery += "likes";
         } else {
             sqlQuery += "f.release_date";
         }
-
         return jdbcTemplate.query(sqlQuery, this::mapRowToFilms, directorId);
     }
 
@@ -237,7 +232,6 @@ public class FilmDAOImpl implements FilmDAO {
                 "         LEFT JOIN films_users AS fu ON f.id = fu.film_id " +
                 "         LEFT JOIN films_directors AS fd ON f.id = fd.film_id" +
                 "         LEFT JOIN directors AS d ON d.id = fd.director_id ");
-
         if (by.equals("title")) {
             sql.append("WHERE LOWER(f.name) LIKE LOWER(?) ");
         } else if (by.equals("director")) {
@@ -245,10 +239,8 @@ public class FilmDAOImpl implements FilmDAO {
         } else if (by.equals("title,director") || by.equals("director,title")) {
             sql.append("WHERE LOWER(f.name) LIKE LOWER(?) OR LOWER(d.name) LIKE LOWER(?) ");
         }
-
         sql.append("GROUP BY f.id " +
                 "ORDER BY COUNT(fu.user_id) DESC");
-
         if (by.equals("title,director") || by.equals("director,title")) {
             return jdbcTemplate.query(sql.toString(), this::mapRowToFilms, "%" + query + "%", "%" + query + "%");
         } else {
