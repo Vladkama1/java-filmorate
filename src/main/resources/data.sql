@@ -6,7 +6,7 @@ MERGE INTO mpa (id, name)
            (5, 'NC-17');
 
 MERGE INTO genres (id, name)
-    values (1, 'Комедия'),
+    VALUES (1, 'Комедия'),
            (2, 'Драма'),
            (3, 'Мультфильм'),
            (4, 'Триллер'),

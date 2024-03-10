@@ -1,12 +1,10 @@
 package ru.yandex.practicum.filmorate.storage.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exceptions.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.storage.DirectorDAO;
 
@@ -42,17 +40,14 @@ public class DirectorDAOImpl implements DirectorDAO {
     public Director save(Director director) {
         String sqlQuery = "INSERT INTO directors (name) " +
                 "VALUES (?)";
-
         KeyHolder keyHolder = new GeneratedKeyHolder();
         jdbcTemplate.update(connection -> {
             PreparedStatement stmt = connection.prepareStatement(sqlQuery, new String[]{"id"});
             stmt.setString(1, director.getName());
             return stmt;
         }, keyHolder);
-
         Long directorId = Objects.requireNonNull(keyHolder.getKey()).longValue();
         director.setId(directorId);
-
         return findById(directorId).orElse(null);
     }
 
@@ -61,12 +56,10 @@ public class DirectorDAOImpl implements DirectorDAO {
         String sqlQuery = "UPDATE directors " +
                 "SET name = ? " +
                 "WHERE id = ?";
-
         int update = jdbcTemplate.update(sqlQuery, director.getName(), director.getId());
         if (update == 0) {
-            throw new NotFoundException("Режисер не найден!", HttpStatus.NOT_FOUND);
+            return Optional.empty();
         }
-
         return findById(director.getId());
     }
 
@@ -81,7 +74,6 @@ public class DirectorDAOImpl implements DirectorDAO {
         String sqlQuery = "DELETE " +
                 "FROM directors " +
                 "WHERE id = ?";
-
         return jdbcTemplate.update(sqlQuery, id) > 0;
     }
 

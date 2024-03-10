@@ -11,11 +11,7 @@ import ru.yandex.practicum.filmorate.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Event;
 import ru.yandex.practicum.filmorate.model.enums.EventType;
 import ru.yandex.practicum.filmorate.model.enums.Operation;
-import ru.yandex.practicum.filmorate.storage.DirectorDAO;
-import ru.yandex.practicum.filmorate.storage.EventDao;
-import ru.yandex.practicum.filmorate.storage.FilmDAO;
-import ru.yandex.practicum.filmorate.storage.GenreDAO;
-import ru.yandex.practicum.filmorate.storage.UserDAO;
+import ru.yandex.practicum.filmorate.storage.*;
 
 import java.util.List;
 
@@ -70,7 +66,6 @@ public class FilmServiceImpl implements FilmService {
     public void addLike(Long filmId, Long userId) {
         existIds(filmId, userId);
         filmDAO.addLike(filmId, userId);
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.LIKE)
                 .operation(Operation.ADD)
@@ -102,7 +97,6 @@ public class FilmServiceImpl implements FilmService {
     public void deleteLike(Long id, Long userId) {
         existIds(id, userId);
         filmDAO.deleteLike(id, userId);
-        // Запись в лог действий
         eventDao.save(Event.builder()
                 .eventType(EventType.LIKE)
                 .operation(Operation.REMOVE)
@@ -124,7 +118,6 @@ public class FilmServiceImpl implements FilmService {
             log.info("Некорректное значение выборки поиска в поле BY = {}", by);
             throw new IllegalArgumentException("Некорректное значение выборки поиска");
         }
-
         return mapper.toListDTO(filmDAO.searchFilms(query, by));
     }
 
