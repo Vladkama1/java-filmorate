@@ -101,7 +101,16 @@ public class FilmServiceImpl implements FilmService {
 
     @Override
     public List<FilmDTO> getAllMutualFilms(Long userId, Long friendId) {
+        existUser(userId);
+        existUser(friendId);
         return mapper.toListDTO(filmDAO.getAllMutualFilms(userId, friendId));
+    }
+
+    private void existUser(Long userId) {
+        boolean isExistUser = userDAO.isExistById(userId);
+        if (!isExistUser) {
+            throw new NotFoundException("User not found by ID: " + userId, HttpStatus.NOT_FOUND);
+        }
     }
 
     private void existIds(Long filmId, Long userId) {
