@@ -58,7 +58,7 @@ public class InMemoryFilmStorage implements FilmDAO {
     }
 
     @Override
-    public List<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
+    public List<Film> getPopularFilm(Integer count, Long genreId, Integer year) {
         return findAll()
                 .stream()
                 .sorted((film1, film2) -> film2.getLikes().size() - film1.getLikes().size())
@@ -73,6 +73,11 @@ public class InMemoryFilmStorage implements FilmDAO {
 
     @Override
     public List<Film> searchFilms(String query, String by) {
+        return null;
+    }
+
+    @Override
+    public List<Film> getAllMutualFilms(Long userId, Long friendId) {
         return null;
     }
 

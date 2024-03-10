@@ -165,7 +165,7 @@ public class FilmDAOImpl implements FilmDAO {
     }
 
     @Override
-    public List<Film> getPopularFilm(Integer count, Integer genreId, Integer year) {
+    public List<Film> getPopularFilm(Integer count, Long genreId, Integer year) {
         String sqlQuery = "SELECT f.*," +
                 "       m.name               AS mpa_name," +
                 "       GROUP_CONCAT(g.id)   AS genre_id," +
@@ -254,6 +254,29 @@ public class FilmDAOImpl implements FilmDAO {
         } else {
             return jdbcTemplate.query(sql.toString(), this::mapRowToFilms, "%" + query + "%");
         }
+    }
+
+    @Override
+    public List<Film> getAllMutualFilms(Long userId, Long friendId) {
+        String sqlQuery = "SELECT f.*," +
+                "       m.name               AS mpa_name," +
+                "       GROUP_CONCAT(g.id)   AS genre_id," +
+                "       GROUP_CONCAT(g.name) AS genre_name," +
+                "       GROUP_CONCAT(d.id)   AS director_id," +
+                "       GROUP_CONCAT(d.name) AS director_name, " +
+                "       COUNT(fu.user_id)    AS likes " +
+                "FROM films AS f" +
+                "         LEFT JOIN mpa AS m ON m.id = f.mpa_id" +
+                "         LEFT JOIN films_genres AS fg ON f.id = fg.film_id" +
+                "         LEFT JOIN genres AS g ON g.id = fg.genre_id" +
+                "         LEFT JOIN films_users AS fu ON f.id = fu.film_id " +
+                "         LEFT JOIN films_users AS fu2 ON f.id = fu2.film_id " +
+                "         LEFT JOIN films_directors AS fd ON f.id = fd.film_id" +
+                "         LEFT JOIN directors AS d ON d.id = fd.director_id " +
+                "WHERE fu.user_id = ? AND fu2.user_id = ? " +
+                "GROUP BY f.id " +
+                "ORDER BY likes DESC;";
+        return jdbcTemplate.query(sqlQuery, this::mapRowToFilms, userId, friendId);
     }
 
     private Film mapRowToFilms(ResultSet resultSet, int rowNum) throws SQLException {

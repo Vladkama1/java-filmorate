@@ -42,11 +42,11 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) Integer count,
-                                         @RequestParam(required = false) Integer genreId,
+                                         @RequestParam(required = false) Long genreId,
                                          @RequestParam(required = false) Integer year) {
         log.info("Запрос GET, на получение топ {} фильмов по id: {} жанра за {} год.", count, genreId, year);
         List<FilmDTO> filmList = service.getPopularFilms(count, genreId, year);
-        log.info("Получен топ {} фильмов: {}", count, filmList.size());
+        log.info("Получен топ {} фильмов: {}.", count, filmList.size());
         return filmList;
     }
 
@@ -91,7 +91,7 @@ public class FilmController {
     }
 
     @DeleteMapping("/{id}/like/{userId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ResponseStatus(HttpStatus.OK)
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         log.info("Запрос DELETE, на удаление лайков, по id: {}", id);
         service.deleteLike(id, userId);
@@ -105,4 +105,12 @@ public class FilmController {
         return filmList;
     }
 
+    @GetMapping("/common")
+    public List<FilmDTO> getAllMutualFilms(@RequestParam Long userId,
+                                           @RequestParam Long friendId) {
+        log.info("Получен запрос GET, на получение общих фильмов.");
+        List<FilmDTO> filmDTOList = service.getAllMutualFilms(userId, friendId);
+        log.info("Получен список общих фильмов: {}", filmDTOList.size());
+        return filmDTOList;
+    }
 }

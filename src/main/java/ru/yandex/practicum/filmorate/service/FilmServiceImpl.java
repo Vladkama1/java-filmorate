@@ -14,6 +14,7 @@ import ru.yandex.practicum.filmorate.model.enums.Operation;
 import ru.yandex.practicum.filmorate.storage.DirectorDAO;
 import ru.yandex.practicum.filmorate.storage.EventDao;
 import ru.yandex.practicum.filmorate.storage.FilmDAO;
+import ru.yandex.practicum.filmorate.storage.GenreDAO;
 import ru.yandex.practicum.filmorate.storage.UserDAO;
 
 import java.util.List;
@@ -24,20 +25,22 @@ public class FilmServiceImpl implements FilmService {
     private final FilmDAO filmDAO;
     private final UserDAO userDAO;
     private final DirectorDAO directorDAO;
-
     private final EventDao eventDao;
+    private final GenreDAO genreDAO;
     private final FilmMapper mapper;
 
     @Autowired
     public FilmServiceImpl(@Qualifier(value = "filmDB") FilmDAO filmDAO,
                            @Qualifier(value = "userDB") UserDAO userDAO,
                            DirectorDAO directorDAO,
+                           GenreDAO genreDAO,
                            EventDao eventDao,
                            FilmMapper mapper) {
         this.filmDAO = filmDAO;
         this.userDAO = userDAO;
         this.directorDAO = directorDAO;
         this.eventDao = eventDao;
+        this.genreDAO = genreDAO;
         this.mapper = mapper;
     }
 
@@ -76,7 +79,13 @@ public class FilmServiceImpl implements FilmService {
     }
 
     @Override
-    public List<FilmDTO> getPopularFilms(Integer count, Integer genreId, Integer year) {
+    public List<FilmDTO> getPopularFilms(Integer count, Long genreId, Integer year) {
+        if (genreId != null) {
+            boolean isExistGenre = genreDAO.isExistById(genreId);
+            if (!isExistGenre) {
+                throw new NotFoundException("Genre not found by ID: " + genreId, HttpStatus.NOT_FOUND);
+            }
+        }
         return mapper.toListDTO(filmDAO.getPopularFilm(count, genreId, year));
     }
 
@@ -119,6 +128,19 @@ public class FilmServiceImpl implements FilmService {
         return mapper.toListDTO(filmDAO.searchFilms(query, by));
     }
 
+    @Override
+    public List<FilmDTO> getAllMutualFilms(Long userId, Long friendId) {
+        existUser(userId);
+        existUser(friendId);
+        return mapper.toListDTO(filmDAO.getAllMutualFilms(userId, friendId));
+    }
+
+    private void existUser(Long userId) {
+        boolean isExistUser = userDAO.isExistById(userId);
+        if (!isExistUser) {
+            throw new NotFoundException("User not found by ID: " + userId, HttpStatus.NOT_FOUND);
+        }
+    }
 
     private void existIds(Long filmId, Long userId) {
         String filmNotFound = "Film not found by ID: ";

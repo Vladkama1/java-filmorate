@@ -32,6 +32,12 @@ public class GenreDAOImpl implements GenreDAO {
         return jdbcTemplate.query(sqlQuery, this::mapRowToGenre);
     }
 
+    @Override
+    public boolean isExistById(Long id) {
+        String sqlQuery = "SELECT EXISTS(SELECT 1 FROM genres WHERE id = ?)";
+        return jdbcTemplate.queryForObject(sqlQuery, Boolean.class, id);
+    }
+
     private Genre mapRowToGenre(ResultSet resultSet, int rowNum) throws SQLException {
         return Genre.builder()
                 .id(resultSet.getLong("id"))
