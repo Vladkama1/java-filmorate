@@ -42,11 +42,11 @@ public class FilmController {
 
     @GetMapping("/popular")
     public List<FilmDTO> getPopularFilms(@Positive @RequestParam(defaultValue = POPULAR_FILMS) Integer count,
-                                         @RequestParam(required = false) Integer genreId,
+                                         @RequestParam(required = false) Long genreId,
                                          @RequestParam(required = false) Integer year) {
         log.info("Запрос GET, на получение топ {} фильмов по id: {} жанра за {} год.", count, genreId, year);
         List<FilmDTO> filmList = service.getPopularFilms(count, genreId, year);
-        log.info("Получен топ {} фильмов: {}", count, filmList.size());
+        log.info("Получен топ {} фильмов: {}.", count, filmList.size());
         return filmList;
     }
 
