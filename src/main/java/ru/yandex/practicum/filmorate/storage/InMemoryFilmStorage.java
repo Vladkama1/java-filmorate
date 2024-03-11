@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exceptions.NotImplementedException;
 import ru.yandex.practicum.filmorate.model.Film;
 
 import java.util.*;
@@ -18,7 +19,7 @@ public class InMemoryFilmStorage implements FilmDAO {
 
     @Override
     public List<Film> getRecommendations(Long userId) {
-        return null;
+        throw new NotImplementedException("Метод getRecommendations не реализован.");
     }
 
     @Override
@@ -68,17 +69,17 @@ public class InMemoryFilmStorage implements FilmDAO {
 
     @Override
     public List<Film> findAllFilmsByDirectorId(Long directorId, String sortBy) {
-        return null;
+        throw new NotImplementedException("Метод findAllFilmsByDirectorId не реализован.");
     }
 
     @Override
     public List<Film> searchFilms(String query, String by) {
-        return null;
+        throw new NotImplementedException("Метод searchFilms не реализован.");
     }
 
     @Override
     public List<Film> getAllMutualFilms(Long userId, Long friendId) {
-        return null;
+        throw new NotImplementedException("Метод getAllMutualFilms не реализован.");
     }
 
     @Override
