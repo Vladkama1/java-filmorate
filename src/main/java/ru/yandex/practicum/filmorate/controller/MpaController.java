@@ -28,7 +28,7 @@ public class MpaController {
 
     @GetMapping
     public List<MpaDTO> getAllMPA() {
-        log.info("Получен запрос GET, на получения всех рейтингов.");
+        log.info("Запрос GET, на получения всех рейтингов.");
         List<MpaDTO> mpaList = service.getAllMPA();
         log.info("Получен список всех рейтингов: {}", mpaList.size());
         return mpaList;

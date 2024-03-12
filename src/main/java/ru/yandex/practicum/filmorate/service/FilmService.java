@@ -9,7 +9,9 @@ public interface FilmService {
 
     List<FilmDTO> getAllFilm();
 
-    List<FilmDTO> getPopularFilms(String count);
+    List<FilmDTO> getPopularFilms(Integer count, Long genreId, Integer year);
+
+    List<FilmDTO> getFilmsByDirectorId(Long directorId, String sortBy);
 
     FilmDTO saveFilm(FilmDTO filmDTO);
 
@@ -20,4 +22,8 @@ public interface FilmService {
     void delete(Long id);
 
     void addLike(Long filmId, Long userId);
+
+    List<FilmDTO> searchFilms(String query, String by);
+
+    List<FilmDTO> getAllMutualFilms(Long userId, Long friendId);
 }

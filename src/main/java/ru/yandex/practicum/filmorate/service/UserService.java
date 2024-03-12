@@ -1,5 +1,7 @@
 package ru.yandex.practicum.filmorate.service;
 
+import ru.yandex.practicum.filmorate.dto.EventDto;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 
 import java.util.List;
@@ -8,6 +10,8 @@ public interface UserService {
     UserDTO findById(Long id);
 
     List<UserDTO> getAllUsers();
+
+    List<FilmDTO> getRecommendations(Long userId);
 
     List<UserDTO> getAllFriends(Long id);
 
@@ -19,5 +23,9 @@ public interface UserService {
 
     void deleteFriend(Long id, Long friendId);
 
+    void delete(Long id);
+
     UserDTO updateUser(UserDTO userDTO);
+
+    List<EventDto> getFeed(Long id);
 }

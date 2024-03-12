@@ -19,8 +19,8 @@ public class MpaDAOImpl implements MpaDAO {
     @Override
     public Optional<MPA> findById(Long id) {
         String sqlQuery = "SELECT *" +
-                "FROM MPA " +
-                "WHERE ID = ?";
+                "FROM mpa " +
+                "WHERE id = ?";
         List<MPA> mpaList = jdbcTemplate.query(sqlQuery, this::mapRowToMpa, id);
         return mpaList.stream().findFirst();
     }
@@ -28,7 +28,7 @@ public class MpaDAOImpl implements MpaDAO {
     @Override
     public List<MPA> findAll() {
         String sqlQuery = "SELECT *" +
-                "FROM MPA";
+                "FROM mpa";
         return jdbcTemplate.query(sqlQuery, this::mapRowToMpa);
     }
 

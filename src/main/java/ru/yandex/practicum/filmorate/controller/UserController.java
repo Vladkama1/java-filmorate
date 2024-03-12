@@ -7,6 +7,8 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfCreate;
 import ru.yandex.practicum.filmorate.anotation.MarkerOfUpdate;
+import ru.yandex.practicum.filmorate.dto.EventDto;
+import ru.yandex.practicum.filmorate.dto.FilmDTO;
 import ru.yandex.practicum.filmorate.dto.UserDTO;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -25,6 +27,14 @@ public class UserController {
     public UserDTO findById(@PathVariable Long id) {
         log.info("Получен запрос GET, на получения пользователя, по id: {}", id);
         return service.findById(id);
+    }
+
+    @GetMapping("/{userId}/recommendations")
+    public List<FilmDTO> getRecommendations(@PathVariable Long userId) {
+        log.info("Получен запрос GET, по рекомендации фильмов, по userId: {}", userId);
+        List<FilmDTO> filmDTOList = service.getRecommendations(userId);
+        log.info("Получен ответ, список рекомендаций по фильмам, размер: {}", filmDTOList.size());
+        return filmDTOList;
     }
 
     @GetMapping
@@ -75,10 +85,25 @@ public class UserController {
         service.addFriend(id, friendId);
     }
 
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        log.info("Получен запрос DELETE, на удаления пользователя, по id: {}", id);
+        service.delete(id);
+    }
+
     @DeleteMapping("/{id}/friends/{friendId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         log.info("Получен запрос DELETE, удаление из друзей по id: {}", id);
         service.deleteFriend(id, friendId);
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<EventDto> getFeed(@PathVariable Long id) {
+        log.info("Получен запрос GET, на получение ленты событий.");
+        List<EventDto> eventDTOList = service.getFeed(id);
+        log.info("Получен список событий: {}", eventDTOList);
+        return eventDTOList;
     }
 }

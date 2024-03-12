@@ -22,13 +22,13 @@ public class GenreController {
 
     @GetMapping("/{id}")
     public GenreDTO findById(@PathVariable Long id) {
-        log.info("Получаем жанра фильма по id : {}", id);
+        log.info("Запрос GET, на получение жанра фильма по id : {}", id);
         return service.findById(id);
     }
 
     @GetMapping
     public List<GenreDTO> findAll() {
-        log.info("Получен запрос GET, на получения всех жанров.");
+        log.info("Запрос GET, на получения всех жанров.");
         List<GenreDTO> genreList = service.findAll();
         log.info("Получен список всех жанров: {}", genreList.size());
         return genreList;

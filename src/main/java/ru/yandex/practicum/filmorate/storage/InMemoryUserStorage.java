@@ -11,7 +11,6 @@ public class InMemoryUserStorage implements UserDAO {
     private Long id = 1L;
     private final Map<Long, User> users = new HashMap<>();
 
-
     @Override
     public User save(User user) {
         user.setId(createIdUser());
@@ -42,6 +41,15 @@ public class InMemoryUserStorage implements UserDAO {
     public boolean deleteFriend(Long id, Long friendId) {
         users.get(id).getFriends().remove(friendId);
         return users.get(friendId).getFriends().remove(id);
+    }
+
+    @Override
+    public boolean delete(Long id) {
+        User user = users.remove(id);
+        if (user == null) {
+            return false;
+        }
+        return true;
     }
 
     @Override
